@@ -1,0 +1,11 @@
+[package]
+name = "xcb-imdkit"
+version = "0.1.0"
+authors = ["azyobuzin <azyobuzin@users.sourceforge.jp>"]
+edition = "2018"
+
+[dependencies]
+xcb = "0.9"
+
+[build-dependencies]
+bindgen = "0.53.1"
