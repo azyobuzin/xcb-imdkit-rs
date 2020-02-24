@@ -1,5 +1,3 @@
-#![link(name = "xcb-imdkit")]
-
 #[macro_use]
 extern crate bitflags;
 

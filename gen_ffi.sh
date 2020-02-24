@@ -7,7 +7,8 @@ WHITELIST='((?i)_?xcb_(xim|im|xic)_.*|xcb_compound_text_.*|xcb_utf8_to_compound_
 
 RAW_LINE='#![allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]
 use xcb::ffi::base::*;
-use xcb::ffi::xproto::*;'
+use xcb::ffi::xproto::*;
+#[link(name = "xcb-imdkit")] extern "C" { }'
 
 bindgen --whitelist-function "${WHITELIST}" \
         --blacklist-function '.*_fr_\w+' \

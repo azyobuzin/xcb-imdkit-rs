@@ -3,6 +3,7 @@
 #![allow(non_snake_case, non_camel_case_types, non_upper_case_globals)]
 use xcb::ffi::base::*;
 use xcb::ffi::xproto::*;
+#[link(name = "xcb-imdkit")] extern "C" { }
 
 pub const XCB_IM_HEADER_SIZE: u32 = 4;
 pub const XCB_XIM_CM_DATA_SIZE: u32 = 20;

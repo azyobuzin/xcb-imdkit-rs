@@ -106,3 +106,16 @@ impl Error for ConvertError {
         self.inner.as_ref().map(|e| e as _)
     }
 }
+
+// https://github.com/fcitx/xcb-imdkit/blob/bb2f10c4754223bc5afaacab7a6417ee0998e303/test/test_encoding.c
+#[test]
+fn shuttle_test() {
+    fn test_conversion(s: &str) {
+        let result = utf8_to_compound_text(s.as_bytes()).unwrap();
+        let utf8_result = compound_text_to_utf8(&result).unwrap();
+        assert_eq!(utf8_result, s);
+    }
+
+    test_conversion("hello world!你好世界켐ㅇㄹ貴方元気？☺");
+    test_conversion(&String::from_utf8(vec![0xe2, 0x80, 0x93]).unwrap());
+}
