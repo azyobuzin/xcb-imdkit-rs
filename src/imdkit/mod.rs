@@ -4,7 +4,7 @@ use std::ptr::NonNull;
 mod im_message;
 mod im_server;
 
-pub use self::im_message::ImMessage;
+pub use self::im_message::*;
 pub use self::im_server::*;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]

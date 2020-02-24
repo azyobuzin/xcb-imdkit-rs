@@ -1,5 +1,6 @@
-use super::{ImClient, ImMessage, InputContext};
+use super::{CallbackArgs, ImClient, ImMessage, InputContext};
 use crate::ffi;
+use std::borrow::Borrow;
 use std::collections::HashSet;
 use std::ffi::CStr;
 use std::fmt;
@@ -12,7 +13,11 @@ use xcb;
 pub struct ImServer<'a> {
     conn: PhantomData<&'a xcb::Connection>,
     data_ptr: NonNull<ImServerData>,
+    close_on_drop: bool,
 }
+
+#[derive(PartialEq, Eq, Hash)]
+pub struct ImServerRef(NonNull<ImServerData>);
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct DeadInputContextError;
@@ -31,20 +36,11 @@ pub enum CommittedString<'a> {
 #[derive(Default)]
 struct ImServerData {
     im: Option<NonNull<ffi::xcb_im_t>>,
-    callback: Option<Box<InternalImCallback>>,
-    valid_ics: HashSet<InputContext>,
+    callback: Option<Box<dyn FnMut(&ImServerRef, CallbackArgs)>>,
+    alive_ics: HashSet<InputContext>,
 }
 
-type InternalImCallback = dyn FnMut(&ImServer, ImClient, InputContext, ImMessage);
-
 impl<'a> ImServer<'a> {
-    fn new(data_ptr: NonNull<ImServerData>) -> Self {
-        ImServer {
-            conn: Default::default(),
-            data_ptr,
-        }
-    }
-
     pub fn create<E>(
         conn: &'a xcb::Connection,
         screen: i32,
@@ -105,51 +101,123 @@ impl<'a> ImServer<'a> {
             Box::leak(Box::from_raw(data_ptr)).im = Some(im);
         }
 
-        ImServer::new(NonNull::new(data_ptr).expect("data_ptr is null"))
-    }
-
-    fn get_data(&self) -> &mut ImServerData {
-        unsafe { Box::leak(Box::from_raw(self.data_ptr.as_ptr())) }
-    }
-
-    pub fn get_im_ptr(&self) -> NonNull<ffi::xcb_im_t> {
-        self.get_data().im.unwrap()
-    }
-
-    pub fn set_callback<'b, F>(&'b mut self, mut callback: F)
-    where
-        F: FnMut(&'b ImServer<'a>, ImClient, InputContext, ImMessage) + 'static,
-    {
-        let internal_callback = move |im: &ImServer, client, ic, msg: ImMessage| {
-            // Cast away lifetimes
-            unsafe { callback(mem::transmute(im), client, ic, msg) }
-        };
-
-        self.get_data().callback = Some(Box::new(internal_callback));
-    }
-
-    pub fn is_alive_ic(&self, ic: &InputContext) -> bool {
-        self.get_data().valid_ics.contains(ic)
-    }
-
-    fn check_ic(&self, ic: &InputContext) -> IcResult<()> {
-        match self.is_alive_ic(ic) {
-            true => Ok(()),
-            false => Err(DeadInputContextError),
+        ImServer {
+            conn: Default::default(),
+            data_ptr: NonNull::new(data_ptr).unwrap(),
+            close_on_drop: false,
         }
     }
 
+    pub fn set_callback<'b, F>(&'b mut self, callback: F)
+    where
+        F: FnMut(&ImServerRef, CallbackArgs) + 'static,
+    {
+        self.as_ref().get_data().callback = Some(Box::new(callback));
+    }
+
     pub fn open(&mut self) -> Result<(), ()> {
-        match unsafe { ffi::xcb_im_open_im(self.get_im_ptr().as_ptr()) } {
+        match unsafe { ffi::xcb_im_open_im(self.as_ref().get_im_ptr().as_ptr()) } {
             true => Ok(()),
             false => Err(()),
         }
     }
 
     pub fn close(&mut self) {
-        unsafe { ffi::xcb_im_close_im(self.get_im_ptr().as_ptr()) }
+        unsafe { ffi::xcb_im_close_im(self.as_ref().get_im_ptr().as_ptr()) }
     }
 
+    pub fn close_on_drop(&mut self, enabled: bool) {
+        self.close_on_drop = enabled;
+    }
+}
+
+extern "C" fn im_callback(
+    im: *mut ffi::xcb_im_t,
+    client: *mut ffi::xcb_im_client_t,
+    ic: *mut ffi::xcb_im_input_context_t,
+    hdr: *const ffi::xcb_im_packet_header_fr_t,
+    frame: *mut c_void,
+    arg: *mut c_void,
+    user_data: *mut c_void,
+) {
+    let data_ptr = NonNull::new(user_data as *mut ImServerData).expect("user_data is null");
+    let data_cell = unsafe { Box::leak(Box::from_raw(data_ptr.as_ptr())) };
+
+    match data_cell.im {
+        Some(p) if p.as_ptr() == im => (),
+        _ => panic!("Unknown im"),
+    }
+
+    let raw_args = super::RawCallbackArgs {
+        client: NonNull::new(client).map(ImClient),
+        ic: NonNull::new(ic).map(InputContext),
+        hdr,
+        frame,
+        arg,
+    };
+
+    let args = super::parse_callback_args(&raw_args);
+
+    // Maintain alive ICs
+    let destroyed_ic = match args.parsed {
+        ImMessage::CreateIc { ic, .. } => {
+            data_cell.alive_ics.insert(ic);
+            None
+        }
+        ImMessage::DestroyIc { ic, .. } => Some(ic),
+        _ => None,
+    };
+
+    // Call user callback
+    if let Some(ref mut callback) = data_cell.callback {
+        let im_ref = ImServerRef(data_ptr);
+        callback(&im_ref, args);
+    }
+
+    if let Some(ic) = destroyed_ic {
+        data_cell.alive_ics.remove(&ic);
+    }
+}
+
+impl<'a> Drop for ImServer<'a> {
+    fn drop(&mut self) {
+        unsafe {
+            let data = Box::from_raw(self.data_ptr.as_ptr());
+
+            if let Some(im) = data.im {
+                if self.close_on_drop {
+                    ffi::xcb_im_close_im(im.as_ptr())
+                }
+
+                ffi::xcb_im_destroy(im.as_ptr())
+            }
+        }
+    }
+}
+
+impl<'a> Borrow<ImServerRef> for ImServer<'a> {
+    #[inline]
+    fn borrow(&self) -> &ImServerRef {
+        unsafe { mem::transmute(&self.data_ptr) }
+    }
+}
+
+impl<'a> AsRef<ImServerRef> for ImServer<'a> {
+    #[inline]
+    fn as_ref(&self) -> &ImServerRef {
+        self.borrow()
+    }
+}
+
+impl<'a> fmt::Debug for ImServer<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("ImServer")
+            .field("data", self.as_ref().get_data())
+            .finish()
+    }
+}
+
+impl ImServerRef {
     pub fn filter_event(&self, event: &xcb::GenericEvent) -> bool {
         unsafe { ffi::xcb_im_filter_event(self.get_im_ptr().as_ptr(), event.ptr) }
     }
@@ -207,70 +275,30 @@ impl<'a> ImServer<'a> {
         unsafe { ffi::xcb_im_geometry_callback(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
         Ok(())
     }
-}
 
-unsafe extern "C" fn im_callback(
-    im: *mut ffi::xcb_im_t,
-    client: *mut ffi::xcb_im_client_t,
-    ic: *mut ffi::xcb_im_input_context_t,
-    hdr: *const ffi::xcb_im_packet_header_fr_t,
-    frame: *mut c_void,
-    arg: *mut c_void,
-    user_data: *mut c_void,
-) {
-    let data_ptr = NonNull::new(user_data as *mut ImServerData).expect("user_data is null");
-    let data_cell = Box::leak(Box::from_raw(data_ptr.as_ptr()));
-
-    match data_cell.im {
-        Some(p) if p.as_ptr() == im => (),
-        _ => panic!("Unknown im"),
+    pub fn is_alive_ic(&self, ic: &InputContext) -> bool {
+        self.get_data().alive_ics.contains(ic)
     }
 
-    if let Some(ref mut callback) = data_cell.callback {
-        // Maintain ICs set
-        // TOOD: これやるの、コールバック実行後じゃないとダメじゃない？
-        // TOOD: _xcb_im_destroy_client で null になる
-        let ic = InputContext(NonNull::new(ic).expect("ic is null"));
-        let msg = super::im_message::parse_message(hdr, frame, arg);
-        match msg {
-            ImMessage::CreateIc(_, _) => {
-                data_cell.valid_ics.insert(ic);
-            }
-            ImMessage::DestroyIc => {
-                data_cell.valid_ics.remove(&ic);
-            }
-            _ => (),
-        }
-
-        let im_server = ImServer::new(data_ptr);
-        let client = ImClient(NonNull::new(client).expect("client is null"));
-
-        callback(&im_server, client, ic, msg);
-        mem::forget(im_server);
+    pub fn get_im_ptr(&self) -> NonNull<ffi::xcb_im_t> {
+        self.get_data().im.unwrap()
     }
-}
 
-/*
-callback が filter_process 以外で呼ばれている箇所
-_xcb_im_destroy_ic → _xcb_im_destroy_client から呼ばれる
-_xcb_im_destroy_client → xcb_im_close_im から呼ばれる
-_xcb_im_process_queue → XIM_SYNC_REPLY が来たらキューの中身をコールバックに投げる
-*/
+    fn get_data(&self) -> &mut ImServerData {
+        unsafe { Box::leak(Box::from_raw(self.0.as_ptr())) }
+    }
 
-impl<'a> Drop for ImServer<'a> {
-    fn drop(&mut self) {
-        unsafe {
-            let data = Box::from_raw(self.data_ptr.as_ptr());
-            if let Some(im) = data.im {
-                ffi::xcb_im_destroy(im.as_ptr())
-            }
+    fn check_ic(&self, ic: &InputContext) -> IcResult<()> {
+        match self.is_alive_ic(ic) {
+            true => Ok(()),
+            false => Err(DeadInputContextError),
         }
     }
 }
 
-impl<'a> fmt::Debug for ImServer<'a> {
+impl fmt::Debug for ImServerRef {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.debug_struct("ImServer")
+        f.debug_struct("ImServerRef")
             .field("data", self.get_data())
             .finish()
     }
@@ -287,7 +315,7 @@ impl fmt::Debug for ImServerData {
                     None => "None",
                 },
             )
-            .field("valid_ics", &self.valid_ics)
+            .field("alive_ics", &self.alive_ics)
             .finish()
     }
 }
