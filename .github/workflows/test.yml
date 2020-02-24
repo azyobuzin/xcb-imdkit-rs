@@ -4,7 +4,28 @@ jobs:
   test:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/cargo@v1
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
         with:
-          command: test
+          toolchain: stable
+          default: true
+          override: true
+          profile: minimal
+      - name: Install packages
+        run: sudo apt-get install -y -qq extra-cmake-modules libxcb1-dev libxcb-util-dev libxcb-keysyms1-dev
+      - name: Checkout xcb-imdkit-rs
+        uses: actions/checkout@v2
+        with:
+          path: xcb-imdkit-rs
+      - name: Checkout xcb-imdkit
+        uses: actions/checkout@v2
+        with:
+          repository: fcitx/xcb-imdkit
+          ref: bb2f10c4754223bc5afaacab7a6417ee0998e303
+          path: xcb-imdkit
+      - name: Install xcb-imdkit
+        run: cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr && cmake --build build && sudo cmake --install build
+        working-directory: xcb-imdkit
+      - name: Run tests
+        run: cargo test
+        working-directory: xcb-imdkit-rs
