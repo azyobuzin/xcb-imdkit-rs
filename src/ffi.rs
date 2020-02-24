@@ -155,6 +155,15 @@ fn bindgen_test_layout__xcb_im_ximattr_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_ximattr_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_ximattr_fr_t {{ im_attribute: {:?} }}",
+            self.im_attribute
+        )
+    }
+}
 pub type xcb_im_ximattr_fr_t = _xcb_im_ximattr_fr_t;
 #[repr(C)]
 pub struct _xcb_im_xicattr_fr_t {
@@ -225,6 +234,15 @@ fn bindgen_test_layout__xcb_im_xicattr_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_xicattr_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_xicattr_fr_t {{ ic_attribute: {:?} }}",
+            self.ic_attribute
+        )
+    }
+}
 pub type xcb_im_xicattr_fr_t = _xcb_im_xicattr_fr_t;
 #[repr(C)]
 pub struct _xcb_im_ximattribute_fr_t {
@@ -279,6 +297,11 @@ fn bindgen_test_layout__xcb_im_ximattribute_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_ximattribute_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_ximattribute_fr_t {{ value: {:?} }}", self.value)
+    }
+}
 pub type xcb_im_ximattribute_fr_t = _xcb_im_ximattribute_fr_t;
 #[repr(C)]
 pub struct _xcb_im_xicattribute_fr_t {
@@ -332,6 +355,11 @@ fn bindgen_test_layout__xcb_im_xicattribute_fr_t() {
             stringify!(value)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_xicattribute_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_xicattribute_fr_t {{ value: {:?} }}", self.value)
+    }
 }
 pub type xcb_im_xicattribute_fr_t = _xcb_im_xicattribute_fr_t;
 #[repr(C)]
@@ -390,6 +418,11 @@ fn bindgen_test_layout__xcb_im_ximtriggerkey_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_ximtriggerkey_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_ximtriggerkey_fr_t {{  }}")
+    }
+}
 pub type xcb_im_ximtriggerkey_fr_t = _xcb_im_ximtriggerkey_fr_t;
 #[repr(C)]
 pub struct _xcb_im_encodinginfo_fr_t {
@@ -434,6 +467,15 @@ fn bindgen_test_layout__xcb_im_encodinginfo_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_encodinginfo_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_encodinginfo_fr_t {{ encoding_info: {:?} }}",
+            self.encoding_info
+        )
+    }
+}
 pub type xcb_im_encodinginfo_fr_t = _xcb_im_encodinginfo_fr_t;
 #[repr(C)]
 pub struct _xcb_im_str_fr_t {
@@ -474,6 +516,11 @@ fn bindgen_test_layout__xcb_im_str_fr_t() {
             stringify!(string)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_str_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_str_fr_t {{ string: {:?} }}", self.string)
+    }
 }
 pub type xcb_im_str_fr_t = _xcb_im_str_fr_t;
 #[repr(C)]
@@ -516,6 +563,11 @@ fn bindgen_test_layout__xcb_im_xpcs_fr_t() {
             stringify!(string)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_xpcs_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_xpcs_fr_t {{ string: {:?} }}", self.string)
+    }
 }
 pub type xcb_im_xpcs_fr_t = _xcb_im_xpcs_fr_t;
 #[repr(C)]
@@ -585,6 +637,15 @@ fn bindgen_test_layout__xcb_im_ext_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_ext_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_ext_fr_t {{ extension_name: {:?} }}",
+            self.extension_name
+        )
+    }
+}
 pub type xcb_im_ext_fr_t = _xcb_im_ext_fr_t;
 #[repr(C)]
 pub struct _xcb_im_inputstyle_fr_t {
@@ -614,6 +675,11 @@ fn bindgen_test_layout__xcb_im_inputstyle_fr_t() {
             stringify!(inputstyle)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_inputstyle_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_inputstyle_fr_t {{  }}")
+    }
 }
 pub type xcb_im_inputstyle_fr_t = _xcb_im_inputstyle_fr_t;
 #[repr(C)]
@@ -658,6 +724,11 @@ fn bindgen_test_layout__xcb_im_attr_head_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_attr_head_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_attr_head_fr_t {{  }}")
+    }
+}
 pub type xcb_im_attr_head_fr_t = _xcb_im_attr_head_fr_t;
 #[repr(C)]
 pub struct _xcb_im_short_fr_t {
@@ -686,6 +757,11 @@ fn bindgen_test_layout__xcb_im_short_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_short_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_short_fr_t {{  }}")
+    }
+}
 pub type xcb_im_short_fr_t = _xcb_im_short_fr_t;
 #[repr(C)]
 pub struct _xcb_im_long_fr_t {
@@ -713,6 +789,11 @@ fn bindgen_test_layout__xcb_im_long_fr_t() {
             stringify!(value)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_long_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_long_fr_t {{  }}")
+    }
 }
 pub type xcb_im_long_fr_t = _xcb_im_long_fr_t;
 #[repr(C)]
@@ -775,6 +856,11 @@ fn bindgen_test_layout__xcb_im_xrectangle_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_xrectangle_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_xrectangle_fr_t {{  }}")
+    }
+}
 pub type xcb_im_xrectangle_fr_t = _xcb_im_xrectangle_fr_t;
 #[repr(C)]
 pub struct _xcb_im_xpoint_fr_t {
@@ -813,6 +899,11 @@ fn bindgen_test_layout__xcb_im_xpoint_fr_t() {
             stringify!(y)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_xpoint_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_xpoint_fr_t {{  }}")
+    }
 }
 pub type xcb_im_xpoint_fr_t = _xcb_im_xpoint_fr_t;
 #[repr(C)]
@@ -858,6 +949,15 @@ fn bindgen_test_layout__xcb_im_fontset_fr_t() {
             stringify!(base_font_name_list)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_fontset_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_fontset_fr_t {{ base_font_name_list: {:?} }}",
+            self.base_font_name_list
+        )
+    }
 }
 pub type xcb_im_fontset_fr_t = _xcb_im_fontset_fr_t;
 #[repr(C)]
@@ -914,6 +1014,15 @@ fn bindgen_test_layout__xcb_im_input_styles_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_input_styles_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_input_styles_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[test]
 fn bindgen_test_layout__xcb_im_input_styles_fr_t() {
     assert_eq!(
@@ -938,6 +1047,15 @@ fn bindgen_test_layout__xcb_im_input_styles_fr_t() {
             stringify!(XIMStyle_list)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_input_styles_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_input_styles_fr_t {{ XIMStyle_list: {:?} }}",
+            self.XIMStyle_list
+        )
+    }
 }
 pub type xcb_im_input_styles_fr_t = _xcb_im_input_styles_fr_t;
 #[repr(C)]
@@ -994,6 +1112,11 @@ fn bindgen_test_layout__xcb_im_packet_header_fr_t() {
             stringify!(length)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_packet_header_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_packet_header_fr_t {{  }}")
+    }
 }
 pub type xcb_im_packet_header_fr_t = _xcb_im_packet_header_fr_t;
 #[repr(C)]
@@ -1098,6 +1221,15 @@ fn bindgen_test_layout__xcb_im_error_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_error_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_error_fr_t {{ error_detail: {:?} }}",
+            self.error_detail
+        )
+    }
+}
 pub type xcb_im_error_fr_t = _xcb_im_error_fr_t;
 #[repr(C)]
 pub struct _xcb_im_connect_fr_t {
@@ -1151,6 +1283,15 @@ fn bindgen_test_layout__xcb_im_connect_fr_t__bindgen_ty_1() {
             stringify!(items)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_connect_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_connect_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
 }
 #[test]
 fn bindgen_test_layout__xcb_im_connect_fr_t() {
@@ -1214,6 +1355,15 @@ fn bindgen_test_layout__xcb_im_connect_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_connect_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_connect_fr_t {{ client_auth_protocol_names: {:?} }}",
+            self.client_auth_protocol_names
+        )
+    }
+}
 pub type xcb_im_connect_fr_t = _xcb_im_connect_fr_t;
 #[repr(C)]
 pub struct _xcb_im_connect_reply_fr_t {
@@ -1258,6 +1408,11 @@ fn bindgen_test_layout__xcb_im_connect_reply_fr_t() {
             stringify!(server_minor_protocol_version)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_connect_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_connect_reply_fr_t {{  }}")
+    }
 }
 pub type xcb_im_connect_reply_fr_t = _xcb_im_connect_reply_fr_t;
 #[repr(C)]
@@ -1316,6 +1471,15 @@ fn bindgen_test_layout__xcb_im_auth_required_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_auth_required_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_auth_required_fr_t {{ auth_data2: {:?} }}",
+            self.auth_data2
+        )
+    }
+}
 pub type xcb_im_auth_required_fr_t = _xcb_im_auth_required_fr_t;
 #[repr(C)]
 pub struct _xcb_im_auth_reply_fr_t {
@@ -1354,6 +1518,11 @@ fn bindgen_test_layout__xcb_im_auth_reply_fr_t() {
             stringify!(field1)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_auth_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_auth_reply_fr_t {{ field1: {:?} }}", self.field1)
+    }
 }
 pub type xcb_im_auth_reply_fr_t = _xcb_im_auth_reply_fr_t;
 #[repr(C)]
@@ -1397,6 +1566,15 @@ fn bindgen_test_layout__xcb_im_auth_next_fr_t() {
             stringify!(auth_data2)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_auth_next_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_auth_next_fr_t {{ auth_data2: {:?} }}",
+            self.auth_data2
+        )
+    }
 }
 pub type xcb_im_auth_next_fr_t = _xcb_im_auth_next_fr_t;
 #[repr(C)]
@@ -1453,6 +1631,15 @@ fn bindgen_test_layout__xcb_im_auth_setup_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_auth_setup_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_auth_setup_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[test]
 fn bindgen_test_layout__xcb_im_auth_setup_fr_t() {
     assert_eq!(
@@ -1478,6 +1665,15 @@ fn bindgen_test_layout__xcb_im_auth_setup_fr_t() {
             stringify!(server_auth_protocol_names)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_auth_setup_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_auth_setup_fr_t {{ server_auth_protocol_names: {:?} }}",
+            self.server_auth_protocol_names
+        )
+    }
 }
 pub type xcb_im_auth_setup_fr_t = _xcb_im_auth_setup_fr_t;
 #[repr(C)]
@@ -1558,6 +1754,11 @@ fn bindgen_test_layout__xcb_im_open_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_open_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_open_fr_t {{ field0: {:?} }}", self.field0)
+    }
+}
 pub type xcb_im_open_fr_t = _xcb_im_open_fr_t;
 #[repr(C)]
 pub struct _xcb_im_open_reply_fr_t {
@@ -1615,6 +1816,15 @@ fn bindgen_test_layout__xcb_im_open_reply_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_open_reply_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_open_reply_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[repr(C)]
 pub struct _xcb_im_open_reply_fr_t__bindgen_ty_2 {
     pub size: u32,
@@ -1664,6 +1874,15 @@ fn bindgen_test_layout__xcb_im_open_reply_fr_t__bindgen_ty_2() {
             stringify!(items)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_open_reply_fr_t__bindgen_ty_2 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_open_reply_fr_t__bindgen_ty_2 {{ items: {:?} }}",
+            self.items
+        )
+    }
 }
 #[test]
 fn bindgen_test_layout__xcb_im_open_reply_fr_t() {
@@ -1716,6 +1935,11 @@ fn bindgen_test_layout__xcb_im_open_reply_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_open_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write ! ( f , "_xcb_im_open_reply_fr_t {{ IM_attribute_supported: {:?}, IC_attribute_supported: {:?} }}" , self . IM_attribute_supported , self . IC_attribute_supported )
+    }
+}
 pub type xcb_im_open_reply_fr_t = _xcb_im_open_reply_fr_t;
 #[repr(C)]
 pub struct _xcb_im_close_fr_t {
@@ -1745,6 +1969,11 @@ fn bindgen_test_layout__xcb_im_close_fr_t() {
             stringify!(input_method_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_close_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_close_fr_t {{  }}")
+    }
 }
 pub type xcb_im_close_fr_t = _xcb_im_close_fr_t;
 #[repr(C)]
@@ -1776,6 +2005,11 @@ fn bindgen_test_layout__xcb_im_close_reply_fr_t() {
             stringify!(input_method_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_close_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_close_reply_fr_t {{  }}")
+    }
 }
 pub type xcb_im_close_reply_fr_t = _xcb_im_close_reply_fr_t;
 #[repr(C)]
@@ -1834,6 +2068,15 @@ fn bindgen_test_layout__xcb_im_register_triggerkeys_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_register_triggerkeys_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_register_triggerkeys_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[repr(C)]
 pub struct _xcb_im_register_triggerkeys_fr_t__bindgen_ty_2 {
     pub size: u32,
@@ -1883,6 +2126,15 @@ fn bindgen_test_layout__xcb_im_register_triggerkeys_fr_t__bindgen_ty_2() {
             stringify!(items)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_register_triggerkeys_fr_t__bindgen_ty_2 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_register_triggerkeys_fr_t__bindgen_ty_2 {{ items: {:?} }}",
+            self.items
+        )
+    }
 }
 #[test]
 fn bindgen_test_layout__xcb_im_register_triggerkeys_fr_t() {
@@ -1938,6 +2190,15 @@ fn bindgen_test_layout__xcb_im_register_triggerkeys_fr_t() {
             stringify!(off_keys_list)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_register_triggerkeys_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_register_triggerkeys_fr_t {{ on_keys_list: {:?}, off_keys_list: {:?} }}",
+            self.on_keys_list, self.off_keys_list
+        )
+    }
 }
 pub type xcb_im_register_triggerkeys_fr_t = _xcb_im_register_triggerkeys_fr_t;
 #[repr(C)]
@@ -2025,6 +2286,11 @@ fn bindgen_test_layout__xcb_im_trigger_notify_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_trigger_notify_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_trigger_notify_fr_t {{  }}")
+    }
+}
 pub type xcb_im_trigger_notify_fr_t = _xcb_im_trigger_notify_fr_t;
 #[repr(C)]
 pub struct _xcb_im_trigger_notify_reply_fr_t {
@@ -2072,6 +2338,11 @@ fn bindgen_test_layout__xcb_im_trigger_notify_reply_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_trigger_notify_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_trigger_notify_reply_fr_t {{  }}")
+    }
 }
 pub type xcb_im_trigger_notify_reply_fr_t = _xcb_im_trigger_notify_reply_fr_t;
 #[repr(C)]
@@ -2146,6 +2417,11 @@ fn bindgen_test_layout__xcb_im_set_event_mask_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_set_event_mask_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_set_event_mask_fr_t {{  }}")
+    }
+}
 pub type xcb_im_set_event_mask_fr_t = _xcb_im_set_event_mask_fr_t;
 #[repr(C)]
 pub struct _xcb_im_encoding_negotiation_fr_t {
@@ -2203,6 +2479,15 @@ fn bindgen_test_layout__xcb_im_encoding_negotiation_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_encoding_negotiation_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_encoding_negotiation_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[repr(C)]
 pub struct _xcb_im_encoding_negotiation_fr_t__bindgen_ty_2 {
     pub size: u32,
@@ -2252,6 +2537,15 @@ fn bindgen_test_layout__xcb_im_encoding_negotiation_fr_t__bindgen_ty_2() {
             stringify!(items)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_encoding_negotiation_fr_t__bindgen_ty_2 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_encoding_negotiation_fr_t__bindgen_ty_2 {{ items: {:?} }}",
+            self.items
+        )
+    }
 }
 #[test]
 fn bindgen_test_layout__xcb_im_encoding_negotiation_fr_t() {
@@ -2307,6 +2601,11 @@ fn bindgen_test_layout__xcb_im_encoding_negotiation_fr_t() {
             stringify!(list_of_encodings_supported_in_th)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_encoding_negotiation_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write ! ( f , "_xcb_im_encoding_negotiation_fr_t {{ supported_list_of_encoding_in_IM_library: {:?}, list_of_encodings_supported_in_th: {:?} }}" , self . supported_list_of_encoding_in_IM_library , self . list_of_encodings_supported_in_th )
+    }
 }
 pub type xcb_im_encoding_negotiation_fr_t = _xcb_im_encoding_negotiation_fr_t;
 #[repr(C)]
@@ -2373,6 +2672,11 @@ fn bindgen_test_layout__xcb_im_encoding_negotiation_reply_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_encoding_negotiation_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_encoding_negotiation_reply_fr_t {{  }}")
+    }
+}
 pub type xcb_im_encoding_negotiation_reply_fr_t = _xcb_im_encoding_negotiation_reply_fr_t;
 #[repr(C)]
 pub struct _xcb_im_query_extension_fr_t {
@@ -2429,6 +2733,15 @@ fn bindgen_test_layout__xcb_im_query_extension_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_query_extension_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_query_extension_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[test]
 fn bindgen_test_layout__xcb_im_query_extension_fr_t() {
     assert_eq!(
@@ -2467,6 +2780,15 @@ fn bindgen_test_layout__xcb_im_query_extension_fr_t() {
             stringify!(extensions_supported_by_the_IM_library)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_query_extension_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_query_extension_fr_t {{ extensions_supported_by_the_IM_library: {:?} }}",
+            self.extensions_supported_by_the_IM_library
+        )
+    }
 }
 pub type xcb_im_query_extension_fr_t = _xcb_im_query_extension_fr_t;
 #[repr(C)]
@@ -2524,6 +2846,15 @@ fn bindgen_test_layout__xcb_im_query_extension_reply_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_query_extension_reply_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_query_extension_reply_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[test]
 fn bindgen_test_layout__xcb_im_query_extension_reply_fr_t() {
     assert_eq!(
@@ -2565,6 +2896,15 @@ fn bindgen_test_layout__xcb_im_query_extension_reply_fr_t() {
             stringify!(list_of_extensions_supported_by_th)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_query_extension_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_query_extension_reply_fr_t {{ list_of_extensions_supported_by_th: {:?} }}",
+            self.list_of_extensions_supported_by_th
+        )
+    }
 }
 pub type xcb_im_query_extension_reply_fr_t = _xcb_im_query_extension_reply_fr_t;
 #[repr(C)]
@@ -2622,6 +2962,15 @@ fn bindgen_test_layout__xcb_im_get_im_values_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_get_im_values_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_get_im_values_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[test]
 fn bindgen_test_layout__xcb_im_get_im_values_fr_t() {
     assert_eq!(
@@ -2660,6 +3009,15 @@ fn bindgen_test_layout__xcb_im_get_im_values_fr_t() {
             stringify!(im_attribute_id)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_get_im_values_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_get_im_values_fr_t {{ im_attribute_id: {:?} }}",
+            self.im_attribute_id
+        )
+    }
 }
 pub type xcb_im_get_im_values_fr_t = _xcb_im_get_im_values_fr_t;
 #[repr(C)]
@@ -2717,6 +3075,15 @@ fn bindgen_test_layout__xcb_im_get_im_values_reply_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_get_im_values_reply_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_get_im_values_reply_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[test]
 fn bindgen_test_layout__xcb_im_get_im_values_reply_fr_t() {
     assert_eq!(
@@ -2758,6 +3125,15 @@ fn bindgen_test_layout__xcb_im_get_im_values_reply_fr_t() {
             stringify!(im_attribute_returned)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_get_im_values_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_get_im_values_reply_fr_t {{ im_attribute_returned: {:?} }}",
+            self.im_attribute_returned
+        )
+    }
 }
 pub type xcb_im_get_im_values_reply_fr_t = _xcb_im_get_im_values_reply_fr_t;
 #[repr(C)]
@@ -2815,6 +3191,15 @@ fn bindgen_test_layout__xcb_im_create_ic_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_create_ic_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_create_ic_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[test]
 fn bindgen_test_layout__xcb_im_create_ic_fr_t() {
     assert_eq!(
@@ -2851,6 +3236,15 @@ fn bindgen_test_layout__xcb_im_create_ic_fr_t() {
             stringify!(ic_attributes)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_create_ic_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_create_ic_fr_t {{ ic_attributes: {:?} }}",
+            self.ic_attributes
+        )
+    }
 }
 pub type xcb_im_create_ic_fr_t = _xcb_im_create_ic_fr_t;
 #[repr(C)]
@@ -2897,6 +3291,11 @@ fn bindgen_test_layout__xcb_im_create_ic_reply_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_create_ic_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_create_ic_reply_fr_t {{  }}")
+    }
+}
 pub type xcb_im_create_ic_reply_fr_t = _xcb_im_create_ic_reply_fr_t;
 #[repr(C)]
 pub struct _xcb_im_destroy_ic_fr_t {
@@ -2940,6 +3339,11 @@ fn bindgen_test_layout__xcb_im_destroy_ic_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_destroy_ic_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_destroy_ic_fr_t {{  }}")
+    }
 }
 pub type xcb_im_destroy_ic_fr_t = _xcb_im_destroy_ic_fr_t;
 #[repr(C)]
@@ -2985,6 +3389,11 @@ fn bindgen_test_layout__xcb_im_destroy_ic_reply_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_destroy_ic_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_destroy_ic_reply_fr_t {{  }}")
+    }
 }
 pub type xcb_im_destroy_ic_reply_fr_t = _xcb_im_destroy_ic_reply_fr_t;
 #[repr(C)]
@@ -3043,6 +3452,15 @@ fn bindgen_test_layout__xcb_im_set_ic_values_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_set_ic_values_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_set_ic_values_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[test]
 fn bindgen_test_layout__xcb_im_set_ic_values_fr_t() {
     assert_eq!(
@@ -3094,6 +3512,15 @@ fn bindgen_test_layout__xcb_im_set_ic_values_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_set_ic_values_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_set_ic_values_fr_t {{ ic_attribute: {:?} }}",
+            self.ic_attribute
+        )
+    }
+}
 pub type xcb_im_set_ic_values_fr_t = _xcb_im_set_ic_values_fr_t;
 #[repr(C)]
 pub struct _xcb_im_set_ic_values_reply_fr_t {
@@ -3141,6 +3568,11 @@ fn bindgen_test_layout__xcb_im_set_ic_values_reply_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_set_ic_values_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_set_ic_values_reply_fr_t {{  }}")
+    }
 }
 pub type xcb_im_set_ic_values_reply_fr_t = _xcb_im_set_ic_values_reply_fr_t;
 #[repr(C)]
@@ -3199,6 +3631,15 @@ fn bindgen_test_layout__xcb_im_get_ic_values_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_get_ic_values_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_get_ic_values_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[test]
 fn bindgen_test_layout__xcb_im_get_ic_values_fr_t() {
     assert_eq!(
@@ -3249,6 +3690,15 @@ fn bindgen_test_layout__xcb_im_get_ic_values_fr_t() {
             stringify!(ic_attribute)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_get_ic_values_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_get_ic_values_fr_t {{ ic_attribute: {:?} }}",
+            self.ic_attribute
+        )
+    }
 }
 pub type xcb_im_get_ic_values_fr_t = _xcb_im_get_ic_values_fr_t;
 #[repr(C)]
@@ -3307,6 +3757,15 @@ fn bindgen_test_layout__xcb_im_get_ic_values_reply_fr_t__bindgen_ty_1() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_get_ic_values_reply_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_get_ic_values_reply_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
+}
 #[test]
 fn bindgen_test_layout__xcb_im_get_ic_values_reply_fr_t() {
     assert_eq!(
@@ -3362,6 +3821,15 @@ fn bindgen_test_layout__xcb_im_get_ic_values_reply_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_get_ic_values_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_get_ic_values_reply_fr_t {{ ic_attribute: {:?} }}",
+            self.ic_attribute
+        )
+    }
+}
 pub type xcb_im_get_ic_values_reply_fr_t = _xcb_im_get_ic_values_reply_fr_t;
 #[repr(C)]
 pub struct _xcb_im_set_ic_focus_fr_t {
@@ -3407,6 +3875,11 @@ fn bindgen_test_layout__xcb_im_set_ic_focus_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_set_ic_focus_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_set_ic_focus_fr_t {{  }}")
+    }
+}
 pub type xcb_im_set_ic_focus_fr_t = _xcb_im_set_ic_focus_fr_t;
 #[repr(C)]
 pub struct _xcb_im_unset_ic_focus_fr_t {
@@ -3451,6 +3924,11 @@ fn bindgen_test_layout__xcb_im_unset_ic_focus_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_unset_ic_focus_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_unset_ic_focus_fr_t {{  }}")
+    }
 }
 pub type xcb_im_unset_ic_focus_fr_t = _xcb_im_unset_ic_focus_fr_t;
 #[repr(C)]
@@ -3522,6 +4000,11 @@ fn bindgen_test_layout__xcb_im_forward_event_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_forward_event_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_forward_event_fr_t {{  }}")
+    }
+}
 pub type xcb_im_forward_event_fr_t = _xcb_im_forward_event_fr_t;
 #[repr(C)]
 pub struct _xcb_im_sync_fr_t {
@@ -3564,6 +4047,11 @@ fn bindgen_test_layout__xcb_im_sync_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_sync_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_sync_fr_t {{  }}")
+    }
 }
 pub type xcb_im_sync_fr_t = _xcb_im_sync_fr_t;
 #[repr(C)]
@@ -3608,6 +4096,11 @@ fn bindgen_test_layout__xcb_im_sync_reply_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_sync_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_sync_reply_fr_t {{  }}")
+    }
 }
 pub type xcb_im_sync_reply_fr_t = _xcb_im_sync_reply_fr_t;
 #[repr(C)]
@@ -3663,6 +4156,15 @@ fn bindgen_test_layout__xcb_im_commit_fr_t__bindgen_ty_1() {
             stringify!(items)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_commit_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_commit_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
 }
 #[test]
 fn bindgen_test_layout__xcb_im_commit_fr_t() {
@@ -3745,6 +4247,15 @@ fn bindgen_test_layout__xcb_im_commit_fr_t() {
             stringify!(keysym)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_commit_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_commit_fr_t {{ committed_string: {:?}, keysym: {:?} }}",
+            self.committed_string, self.keysym
+        )
+    }
 }
 pub type xcb_im_commit_fr_t = _xcb_im_commit_fr_t;
 #[repr(C)]
@@ -3829,6 +4340,15 @@ fn bindgen_test_layout__xcb_im_commit_chars_fr_t() {
             stringify!(committed_string)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_commit_chars_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_commit_chars_fr_t {{ committed_string: {:?} }}",
+            self.committed_string
+        )
+    }
 }
 pub type xcb_im_commit_chars_fr_t = _xcb_im_commit_chars_fr_t;
 #[repr(C)]
@@ -3925,6 +4445,15 @@ fn bindgen_test_layout__xcb_im_commit_both_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_commit_both_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_commit_both_fr_t {{ committed_string: {:?} }}",
+            self.committed_string
+        )
+    }
+}
 pub type xcb_im_commit_both_fr_t = _xcb_im_commit_both_fr_t;
 #[repr(C)]
 pub struct _xcb_im_reset_ic_fr_t {
@@ -3967,6 +4496,11 @@ fn bindgen_test_layout__xcb_im_reset_ic_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_reset_ic_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_reset_ic_fr_t {{  }}")
+    }
 }
 pub type xcb_im_reset_ic_fr_t = _xcb_im_reset_ic_fr_t;
 #[repr(C)]
@@ -4041,6 +4575,15 @@ fn bindgen_test_layout__xcb_im_reset_ic_reply_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_reset_ic_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_reset_ic_reply_fr_t {{ committed_string: {:?} }}",
+            self.committed_string
+        )
+    }
+}
 pub type xcb_im_reset_ic_reply_fr_t = _xcb_im_reset_ic_reply_fr_t;
 #[repr(C)]
 pub struct _xcb_im_geometry_fr_t {
@@ -4083,6 +4626,11 @@ fn bindgen_test_layout__xcb_im_geometry_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_geometry_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_geometry_fr_t {{  }}")
+    }
 }
 pub type xcb_im_geometry_fr_t = _xcb_im_geometry_fr_t;
 #[repr(C)]
@@ -4212,6 +4760,15 @@ fn bindgen_test_layout__xcb_im_str_conversion_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_str_conversion_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_str_conversion_fr_t {{ string: {:?} }}",
+            self.string
+        )
+    }
+}
 pub type xcb_im_str_conversion_fr_t = _xcb_im_str_conversion_fr_t;
 #[repr(C)]
 pub struct _xcb_im_str_conversion_reply_fr_t {
@@ -4271,6 +4828,15 @@ fn bindgen_test_layout__xcb_im_str_conversion_reply_fr_t__bindgen_ty_1() {
             stringify!(items)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_str_conversion_reply_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_str_conversion_reply_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
 }
 #[test]
 fn bindgen_test_layout__xcb_im_str_conversion_reply_fr_t() {
@@ -4366,6 +4932,15 @@ fn bindgen_test_layout__xcb_im_str_conversion_reply_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_str_conversion_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_str_conversion_reply_fr_t {{ retrieved_string: {:?}, feedback_array: {:?} }}",
+            self.retrieved_string, self.feedback_array
+        )
+    }
+}
 pub type xcb_im_str_conversion_reply_fr_t = _xcb_im_str_conversion_reply_fr_t;
 #[repr(C)]
 pub struct _xcb_im_preedit_start_fr_t {
@@ -4410,6 +4985,11 @@ fn bindgen_test_layout__xcb_im_preedit_start_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_preedit_start_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_preedit_start_fr_t {{  }}")
+    }
 }
 pub type xcb_im_preedit_start_fr_t = _xcb_im_preedit_start_fr_t;
 #[repr(C)]
@@ -4473,6 +5053,11 @@ fn bindgen_test_layout__xcb_im_preedit_start_reply_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_preedit_start_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_preedit_start_reply_fr_t {{  }}")
+    }
+}
 pub type xcb_im_preedit_start_reply_fr_t = _xcb_im_preedit_start_reply_fr_t;
 #[repr(C)]
 pub struct _xcb_im_preedit_draw_fr_t {
@@ -4535,6 +5120,15 @@ fn bindgen_test_layout__xcb_im_preedit_draw_fr_t__bindgen_ty_1() {
             stringify!(items)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_preedit_draw_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_preedit_draw_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
 }
 #[test]
 fn bindgen_test_layout__xcb_im_preedit_draw_fr_t() {
@@ -4660,6 +5254,15 @@ fn bindgen_test_layout__xcb_im_preedit_draw_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_preedit_draw_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_preedit_draw_fr_t {{ preedit_string: {:?}, feedback_array: {:?} }}",
+            self.preedit_string, self.feedback_array
+        )
+    }
+}
 pub type xcb_im_preedit_draw_fr_t = _xcb_im_preedit_draw_fr_t;
 #[repr(C)]
 pub struct _xcb_im_preedit_caret_fr_t {
@@ -4744,6 +5347,11 @@ fn bindgen_test_layout__xcb_im_preedit_caret_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_preedit_caret_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_preedit_caret_fr_t {{  }}")
+    }
+}
 pub type xcb_im_preedit_caret_fr_t = _xcb_im_preedit_caret_fr_t;
 #[repr(C)]
 pub struct _xcb_im_preedit_caret_reply_fr_t {
@@ -4806,6 +5414,11 @@ fn bindgen_test_layout__xcb_im_preedit_caret_reply_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_preedit_caret_reply_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_preedit_caret_reply_fr_t {{  }}")
+    }
+}
 pub type xcb_im_preedit_caret_reply_fr_t = _xcb_im_preedit_caret_reply_fr_t;
 #[repr(C)]
 pub struct _xcb_im_preedit_done_fr_t {
@@ -4851,6 +5464,11 @@ fn bindgen_test_layout__xcb_im_preedit_done_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_preedit_done_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_preedit_done_fr_t {{  }}")
+    }
+}
 pub type xcb_im_preedit_done_fr_t = _xcb_im_preedit_done_fr_t;
 #[repr(C)]
 pub struct _xcb_im_status_start_fr_t {
@@ -4895,6 +5513,11 @@ fn bindgen_test_layout__xcb_im_status_start_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_status_start_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_status_start_fr_t {{  }}")
+    }
 }
 pub type xcb_im_status_start_fr_t = _xcb_im_status_start_fr_t;
 #[repr(C)]
@@ -4956,6 +5579,15 @@ fn bindgen_test_layout__xcb_im_status_draw_text_fr_t__bindgen_ty_1() {
             stringify!(items)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_status_draw_text_fr_t__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_status_draw_text_fr_t__bindgen_ty_1 {{ items: {:?} }}",
+            self.items
+        )
+    }
 }
 #[test]
 fn bindgen_test_layout__xcb_im_status_draw_text_fr_t() {
@@ -5059,6 +5691,15 @@ fn bindgen_test_layout__xcb_im_status_draw_text_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_status_draw_text_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "_xcb_im_status_draw_text_fr_t {{ status_string: {:?}, feedback_array: {:?} }}",
+            self.status_string, self.feedback_array
+        )
+    }
+}
 pub type xcb_im_status_draw_text_fr_t = _xcb_im_status_draw_text_fr_t;
 #[repr(C)]
 pub struct _xcb_im_status_draw_bitmap_fr_t {
@@ -5131,6 +5772,11 @@ fn bindgen_test_layout__xcb_im_status_draw_bitmap_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_status_draw_bitmap_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_status_draw_bitmap_fr_t {{  }}")
+    }
+}
 pub type xcb_im_status_draw_bitmap_fr_t = _xcb_im_status_draw_bitmap_fr_t;
 #[repr(C)]
 pub struct _xcb_im_status_done_fr_t {
@@ -5175,6 +5821,11 @@ fn bindgen_test_layout__xcb_im_status_done_fr_t() {
             stringify!(input_context_ID)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_status_done_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_status_done_fr_t {{  }}")
+    }
 }
 pub type xcb_im_status_done_fr_t = _xcb_im_status_done_fr_t;
 #[repr(C)]
@@ -5290,6 +5941,11 @@ fn bindgen_test_layout__xcb_im_ext_set_event_mask_fr_t() {
             stringify!(synchronous_event_mask)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_ext_set_event_mask_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_ext_set_event_mask_fr_t {{  }}")
+    }
 }
 pub type xcb_im_ext_set_event_mask_fr_t = _xcb_im_ext_set_event_mask_fr_t;
 #[repr(C)]
@@ -5434,6 +6090,11 @@ fn bindgen_test_layout__xcb_im_ext_forward_keyevent_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_ext_forward_keyevent_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_ext_forward_keyevent_fr_t {{  }}")
+    }
+}
 pub type xcb_im_ext_forward_keyevent_fr_t = _xcb_im_ext_forward_keyevent_fr_t;
 #[repr(C)]
 pub struct _xcb_im_ext_move_fr_t {
@@ -5499,6 +6160,11 @@ fn bindgen_test_layout__xcb_im_ext_move_fr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_ext_move_fr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_ext_move_fr_t {{  }}")
+    }
+}
 pub type xcb_im_ext_move_fr_t = _xcb_im_ext_move_fr_t;
 pub const xcb_xim_lookup_flags_t_XCB_XIM_SYNCHRONOUS: xcb_xim_lookup_flags_t = 1;
 pub const xcb_xim_lookup_flags_t_XCB_XIM_LOOKUP_CHARS: xcb_xim_lookup_flags_t = 2;
@@ -5553,6 +6219,11 @@ fn bindgen_test_layout__xcb_im_ext_list() {
             stringify!(minor_opcode)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_ext_list {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_ext_list {{ name: {:?} }}", self.name)
+    }
 }
 pub type xcb_im_ext_list = _xcb_im_ext_list;
 pub const _xcb_im_style_t_XCB_IM_PreeditArea: _xcb_im_style_t = 1;
@@ -5617,6 +6288,11 @@ fn bindgen_test_layout__xcb_im_trigger_keys_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_trigger_keys_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_trigger_keys_t {{ keys: {:?} }}", self.keys)
+    }
+}
 pub type xcb_im_trigger_keys_t = _xcb_im_trigger_keys_t;
 #[repr(C)]
 pub struct _xcb_im_styles_t {
@@ -5655,6 +6331,11 @@ fn bindgen_test_layout__xcb_im_styles_t() {
             stringify!(styles)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_styles_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_styles_t {{ styles: {:?} }}", self.styles)
+    }
 }
 pub type xcb_im_styles_t = _xcb_im_styles_t;
 pub type xcb_im_encoding_t = *mut ::std::os::raw::c_char;
@@ -5842,6 +6523,11 @@ fn bindgen_test_layout__xcb_im_preedit_attr_t() {
         )
     );
 }
+impl ::std::fmt::Debug for _xcb_im_preedit_attr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_preedit_attr_t {{  }}")
+    }
+}
 pub type xcb_im_preedit_attr_t = _xcb_im_preedit_attr_t;
 #[repr(C)]
 pub struct _xcb_im_status_attr_t {
@@ -5956,6 +6642,11 @@ fn bindgen_test_layout__xcb_im_status_attr_t() {
             stringify!(line_space)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_im_status_attr_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_im_status_attr_t {{  }}")
+    }
 }
 pub type xcb_im_status_attr_t = _xcb_im_status_attr_t;
 pub type xcb_im_callback = ::std::option::Option<
@@ -6152,6 +6843,11 @@ fn bindgen_test_layout__xcb_xim_nested_list() {
             stringify!(length)
         )
     );
+}
+impl ::std::fmt::Debug for _xcb_xim_nested_list {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "_xcb_xim_nested_list {{ data: {:?} }}", self.data)
+    }
 }
 pub type xcb_xim_nested_list = _xcb_xim_nested_list;
 pub type xcb_xim_set_event_mask_callback = ::std::option::Option<

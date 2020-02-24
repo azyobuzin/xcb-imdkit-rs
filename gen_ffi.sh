@@ -15,6 +15,7 @@ bindgen --whitelist-function "${WHITELIST}" \
         --whitelist-var "${WHITELIST}" \
         --no-recursive-whitelist \
         --size_t-is-usize \
+        --impl-debug \
         --raw-line "${RAW_LINE}" \
         -o src/ffi.rs \
         wrapper.h "$@"
