@@ -1,9 +1,11 @@
 use crate::ffi;
 use std::ptr::NonNull;
 
+mod data_types;
 mod im_message;
 mod im_server;
 
+pub use self::data_types::*;
 pub use self::im_message::*;
 pub use self::im_server::*;
 

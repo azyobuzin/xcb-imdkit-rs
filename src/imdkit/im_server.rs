@@ -1,4 +1,4 @@
-use super::{CallbackArgs, ImClient, ImMessage, InputContext};
+use super::*;
 use crate::ffi;
 use std::borrow::Borrow;
 use std::collections::HashSet;
@@ -24,8 +24,6 @@ pub struct DeadInputContextError;
 
 pub type IcResult<T> = Result<T, DeadInputContextError>;
 
-pub type TriggerKey = ffi::xcb_im_ximtriggerkey_fr_t;
-
 #[derive(Debug, Clone, Copy)]
 pub enum CommittedString<'a> {
     Chars(&'a CStr),
@@ -47,7 +45,7 @@ impl<'a> ImServer<'a> {
         server_window: xcb::Window,
         server_name: &CStr,
         locale: &CStr,
-        input_styles: &[ffi::xcb_im_style_t], // TODO: style bitflag
+        input_styles: &[InputStyle],
         on_keys_list: &[TriggerKey],
         off_keys_list: &[TriggerKey],
         encoding_list: impl IntoIterator<Item = E>,
