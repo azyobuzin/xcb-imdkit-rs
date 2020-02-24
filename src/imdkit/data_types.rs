@@ -1,13 +1,15 @@
 use crate::ffi::*;
 
 pub type TriggerKey = xcb_im_ximtriggerkey_fr_t;
+pub type PreeditAttr = xcb_im_preedit_attr_t;
+pub type StatusAttr = xcb_im_status_attr_t;
 
 #[derive(Debug, Clone)]
 pub struct PreeditDrawMessage<'a> {
     pub caret: u32,
     pub chg_first: u32,
     pub chg_length: u32,
-    pub status: PreeditDrawStatus,
+    pub status: DrawStatus,
     pub preedit_string: &'a [u8],
     pub feedback_array: &'a [Feedback],
 }
@@ -36,7 +38,7 @@ bitflags! {
 
 bitflags! {
     #[derive(Default)]
-    pub struct PreeditDrawStatus: u32 {
+    pub struct DrawStatus: u32 {
         const NO_STRING = 1;
         const NO_FEEDBACK = 2;
     }

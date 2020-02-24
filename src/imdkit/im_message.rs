@@ -7,13 +7,13 @@ pub struct CallbackArgs<'a> {
     pub major_opcode: u8,
     pub minor_opcode: u8,
     pub parsed: ImMessage<'a>,
-    pub raw: &'a RawCallbackArgs,
+    pub raw: &'a RawCallbackArgs<'a>,
 }
 
 #[derive(Debug, Clone, Copy)]
-pub struct RawCallbackArgs {
-    pub client: Option<ImClient>,
-    pub ic: Option<InputContext>,
+pub struct RawCallbackArgs<'a> {
+    pub client: Option<&'a ImClient>,
+    pub ic: Option<&'a InputContext>,
     pub hdr: *const ffi::xcb_im_packet_header_fr_t,
     pub frame: *mut c_void,
     pub arg: *mut c_void,
@@ -23,14 +23,14 @@ pub struct RawCallbackArgs {
 #[non_exhaustive]
 pub enum ImMessage<'a> {
     CreateIc {
-        client: ImClient,
-        ic: InputContext,
+        client: &'a ImClient,
+        ic: &'a InputContext,
         frame: &'a ffi::xcb_im_create_ic_fr_t,
         reply_frame: &'a mut ffi::xcb_im_create_ic_reply_fr_t,
     },
     DestroyIc {
-        client: ImClient,
-        ic: InputContext,
+        client: &'a ImClient,
+        ic: &'a InputContext,
     },
     #[doc(hidden)]
     __Unsupported,

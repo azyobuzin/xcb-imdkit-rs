@@ -1,7 +1,7 @@
 use super::*;
 use crate::ffi;
 use std::borrow::Borrow;
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::ffi::CStr;
 use std::fmt;
 use std::marker::PhantomData;
@@ -19,11 +19,6 @@ pub struct ImServer<'a> {
 #[derive(PartialEq, Eq, Hash)]
 pub struct ImServerRef(NonNull<ImServerData>);
 
-#[derive(Clone, PartialEq, Eq, Debug)]
-pub struct DeadInputContextError;
-
-pub type IcResult<T> = Result<T, DeadInputContextError>;
-
 #[derive(Debug, Clone, Copy)]
 pub enum CommittedString<'a> {
     KeySym(u32),
@@ -35,7 +30,7 @@ pub enum CommittedString<'a> {
 struct ImServerData {
     im: Option<NonNull<ffi::xcb_im_t>>,
     callback: Option<Box<dyn FnMut(&ImServerRef, CallbackArgs)>>,
-    alive_ics: HashSet<InputContext>,
+    input_contexts: HashMap<NonNull<ffi::xcb_im_input_context_t>, InputContext>,
 }
 
 impl<'a> ImServer<'a> {
@@ -114,14 +109,14 @@ impl<'a> ImServer<'a> {
     }
 
     pub fn open(&mut self) -> Result<(), ()> {
-        match unsafe { ffi::xcb_im_open_im(self.as_ref().get_im_ptr().as_ptr()) } {
+        match unsafe { ffi::xcb_im_open_im(self.as_ref().get_im_ptr()) } {
             true => Ok(()),
             false => Err(()),
         }
     }
 
     pub fn close(&mut self) {
-        unsafe { ffi::xcb_im_close_im(self.as_ref().get_im_ptr().as_ptr()) }
+        unsafe { ffi::xcb_im_close_im(self.as_ref().get_im_ptr()) }
     }
 
     pub fn close_on_drop(&mut self, enabled: bool) {
@@ -146,9 +141,11 @@ extern "C" fn im_callback(
         _ => panic!("Unknown im"),
     }
 
+    let client_opt = NonNull::new(client).map(ImClient);
+    let ic_opt = NonNull::new(ic).map(InputContext);
     let raw_args = super::RawCallbackArgs {
-        client: NonNull::new(client).map(ImClient),
-        ic: NonNull::new(ic).map(InputContext),
+        client: client_opt.as_ref(),
+        ic: ic_opt.as_ref(),
         hdr,
         frame,
         arg,
@@ -159,7 +156,8 @@ extern "C" fn im_callback(
     // Maintain alive ICs
     let destroyed_ic = match args.parsed {
         ImMessage::CreateIc { ic, .. } => {
-            data_cell.alive_ics.insert(ic);
+            let key = ic.as_ptr_non_null();
+            data_cell.input_contexts.insert(key, InputContext(key));
             None
         }
         ImMessage::DestroyIc { ic, .. } => Some(ic),
@@ -173,7 +171,7 @@ extern "C" fn im_callback(
     }
 
     if let Some(ic) = destroyed_ic {
-        data_cell.alive_ics.remove(&ic);
+        data_cell.input_contexts.remove(&ic.as_ptr_non_null());
     }
 }
 
@@ -217,22 +215,14 @@ impl<'a> fmt::Debug for ImServer<'a> {
 
 impl ImServerRef {
     pub fn filter_event(&self, event: &xcb::GenericEvent) -> bool {
-        unsafe { ffi::xcb_im_filter_event(self.get_im_ptr().as_ptr(), event.ptr) }
+        unsafe { ffi::xcb_im_filter_event(self.get_im_ptr(), event.ptr) }
     }
 
-    pub fn forward_event(&self, ic: &InputContext, event: &xcb::KeyPressEvent) -> IcResult<()> {
-        self.check_ic(ic)?;
-        unsafe { ffi::xcb_im_forward_event(self.get_im_ptr().as_ptr(), ic.as_ptr(), event.ptr) }
-        Ok(())
+    pub fn forward_event(&self, ic: &InputContext, event: &xcb::KeyPressEvent) {
+        unsafe { ffi::xcb_im_forward_event(self.get_im_ptr(), ic.as_ptr(), event.ptr) }
     }
 
-    pub fn commit_string(
-        &self,
-        ic: &InputContext,
-        committed_str: &CommittedString,
-    ) -> IcResult<()> {
-        self.check_ic(ic)?;
-
+    pub fn commit_string(&self, ic: &InputContext, committed_str: &CommittedString) {
         use CommittedString::*;
         let flag = match committed_str {
             KeySym(_) => ffi::xcb_xim_lookup_flags_t_XCB_XIM_LOOKUP_KEYSYM,
@@ -256,7 +246,7 @@ impl ImServerRef {
 
         unsafe {
             ffi::xcb_im_commit_string(
-                self.get_im_ptr().as_ptr(),
+                self.get_im_ptr(),
                 ic.as_ptr(),
                 flag,
                 s as *mut c_char,
@@ -264,29 +254,17 @@ impl ImServerRef {
                 keysym,
             )
         }
-
-        Ok(())
     }
 
-    pub fn geometry_callback(&self, ic: &InputContext) -> IcResult<()> {
-        self.check_ic(ic)?;
-        unsafe { ffi::xcb_im_geometry_callback(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
-        Ok(())
+    pub fn geometry_callback(&self, ic: &InputContext) {
+        unsafe { ffi::xcb_im_geometry_callback(self.get_im_ptr(), ic.as_ptr()) }
     }
 
-    pub fn preedit_start_callback(&self, ic: &InputContext) -> IcResult<()> {
-        self.check_ic(ic)?;
-        unsafe { ffi::xcb_im_preedit_start_callback(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
-        Ok(())
+    pub fn preedit_start_callback(&self, ic: &InputContext) {
+        unsafe { ffi::xcb_im_preedit_start_callback(self.get_im_ptr(), ic.as_ptr()) }
     }
 
-    pub fn preedit_draw_callback(
-        &self,
-        ic: &InputContext,
-        frame: &PreeditDrawMessage,
-    ) -> IcResult<()> {
-        self.check_ic(ic)?;
-
+    pub fn preedit_draw_callback(&self, ic: &InputContext, frame: &PreeditDrawMessage) {
         let mut frame = ffi::xcb_im_preedit_draw_fr_t {
             input_method_ID: 0,  // set by xcb-imdkit
             input_context_ID: 0, // set by xcb-imdkit
@@ -302,20 +280,10 @@ impl ImServerRef {
             },
         };
 
-        unsafe {
-            ffi::xcb_im_preedit_draw_callback(self.get_im_ptr().as_ptr(), ic.as_ptr(), &mut frame)
-        }
-
-        Ok(())
+        unsafe { ffi::xcb_im_preedit_draw_callback(self.get_im_ptr(), ic.as_ptr(), &mut frame) }
     }
 
-    pub fn preedit_caret_callback(
-        &self,
-        ic: &InputContext,
-        frame: &PreeditCaretMessage,
-    ) -> IcResult<()> {
-        self.check_ic(ic)?;
-
+    pub fn preedit_caret_callback(&self, ic: &InputContext, frame: &PreeditCaretMessage) {
         let mut frame = ffi::xcb_im_preedit_caret_fr_t {
             input_method_ID: 0,  // set by xcb-imdkit
             input_context_ID: 0, // set by xcb-imdkit
@@ -324,58 +292,45 @@ impl ImServerRef {
             style: frame.style as u32,
         };
 
-        unsafe {
-            ffi::xcb_im_preedit_caret_callback(self.get_im_ptr().as_ptr(), ic.as_ptr(), &mut frame)
-        }
-
-        Ok(())
+        unsafe { ffi::xcb_im_preedit_caret_callback(self.get_im_ptr(), ic.as_ptr(), &mut frame) }
     }
 
-    pub fn preedit_done_callback(&self, ic: &InputContext) -> IcResult<()> {
-        self.check_ic(ic)?;
-        unsafe { ffi::xcb_im_preedit_done_callback(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
-        Ok(())
+    pub fn preedit_done_callback(&self, ic: &InputContext) {
+        unsafe { ffi::xcb_im_preedit_done_callback(self.get_im_ptr(), ic.as_ptr()) }
     }
 
-    pub fn preedit_start(&self, ic: &InputContext) -> IcResult<()> {
-        self.check_ic(ic)?;
-        unsafe { ffi::xcb_im_preedit_start(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
-        Ok(())
+    pub fn preedit_start(&self, ic: &InputContext) {
+        unsafe { ffi::xcb_im_preedit_start(self.get_im_ptr(), ic.as_ptr()) }
     }
 
-    pub fn preedit_end(&self, ic: &InputContext) -> IcResult<()> {
-        self.check_ic(ic)?;
-        unsafe { ffi::xcb_im_preedit_end(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
-        Ok(())
+    pub fn preedit_end(&self, ic: &InputContext) {
+        unsafe { ffi::xcb_im_preedit_end(self.get_im_ptr(), ic.as_ptr()) }
     }
 
-    pub fn sync_xlib(&self, ic: &InputContext) -> IcResult<()> {
-        self.check_ic(ic)?;
-        unsafe { ffi::xcb_im_sync_xlib(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
-        Ok(())
+    pub fn sync_xlib(&self, ic: &InputContext) {
+        unsafe { ffi::xcb_im_sync_xlib(self.get_im_ptr(), ic.as_ptr()) }
     }
 
     pub fn support_extension(&self, major_code: u16, minor_code: u16) -> bool {
-        unsafe { ffi::xcb_im_support_extension(self.get_im_ptr().as_ptr(), major_code, minor_code) }
+        unsafe { ffi::xcb_im_support_extension(self.get_im_ptr(), major_code, minor_code) }
     }
 
-    pub fn is_alive_ic(&self, ic: &InputContext) -> bool {
-        self.get_data().alive_ics.contains(ic)
+    pub fn get_ic(&self, ic_ptr: *mut ffi::xcb_im_input_context_t) -> Option<&InputContext> {
+        NonNull::new(ic_ptr).and_then(|ic| self.get_data().input_contexts.get(&ic))
     }
 
-    pub fn get_im_ptr(&self) -> NonNull<ffi::xcb_im_t> {
+    #[inline]
+    pub fn get_im_ptr(&self) -> *mut ffi::xcb_im_t {
+        self.get_im_ptr_non_null().as_ptr()
+    }
+
+    #[inline]
+    pub fn get_im_ptr_non_null(&self) -> NonNull<ffi::xcb_im_t> {
         self.get_data().im.unwrap()
     }
 
     fn get_data(&self) -> &mut ImServerData {
         unsafe { Box::leak(Box::from_raw(self.0.as_ptr())) }
-    }
-
-    fn check_ic(&self, ic: &InputContext) -> IcResult<()> {
-        match self.is_alive_ic(ic) {
-            true => Ok(()),
-            false => Err(DeadInputContextError),
-        }
     }
 }
 
@@ -398,19 +353,7 @@ impl fmt::Debug for ImServerData {
                     None => "None",
                 },
             )
-            .field("alive_ics", &self.alive_ics)
+            .field("input_contexts", &self.input_contexts)
             .finish()
-    }
-}
-
-impl std::error::Error for DeadInputContextError {
-    fn description(&self) -> &str {
-        "the specified InputContext is dead"
-    }
-}
-
-impl fmt::Display for DeadInputContextError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str(std::error::Error::description(self))
     }
 }
