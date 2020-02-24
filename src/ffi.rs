@@ -7282,3 +7282,20 @@ extern "C" {
 extern "C" {
     pub fn xcb_xim_ext_move(im: *mut xcb_xim_t, ic: xcb_xic_t, x: i16, y: i16) -> bool;
 }
+extern "C" {
+    pub fn xcb_compound_text_init();
+}
+extern "C" {
+    pub fn xcb_utf8_to_compound_text(
+        utf8: *const ::std::os::raw::c_char,
+        length: usize,
+        lenghtOut: *mut usize,
+    ) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
+    pub fn xcb_compound_text_to_utf8(
+        compound_text: *const ::std::os::raw::c_char,
+        length: usize,
+        lenghtOut: *mut usize,
+    ) -> *mut ::std::os::raw::c_char;
+}
