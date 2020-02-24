@@ -228,6 +228,8 @@ unsafe extern "C" fn im_callback(
 
     if let Some(ref mut callback) = data_cell.callback {
         // Maintain ICs set
+        // TOOD: これやるの、コールバック実行後じゃないとダメじゃない？
+        // TOOD: _xcb_im_destroy_client で null になる
         let ic = InputContext(NonNull::new(ic).expect("ic is null"));
         let msg = super::im_message::parse_message(hdr, frame, arg);
         match msg {
@@ -247,6 +249,13 @@ unsafe extern "C" fn im_callback(
         mem::forget(im_server);
     }
 }
+
+/*
+callback が filter_process 以外で呼ばれている箇所
+_xcb_im_destroy_ic → _xcb_im_destroy_client から呼ばれる
+_xcb_im_destroy_client → xcb_im_close_im から呼ばれる
+_xcb_im_process_queue → XIM_SYNC_REPLY が来たらキューの中身をコールバックに投げる
+*/
 
 impl<'a> Drop for ImServer<'a> {
     fn drop(&mut self) {
