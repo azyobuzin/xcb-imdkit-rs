@@ -1,4 +1,5 @@
 use crate::ffi;
+use std::ffi::CStr;
 use std::ptr::NonNull;
 
 mod data_types;
@@ -32,3 +33,7 @@ impl InputContext {
 
 unsafe impl Send for InputContext {}
 unsafe impl Sync for InputContext {}
+
+pub fn all_locales() -> &'static CStr {
+    CStr::from_bytes_with_nul(ffi::XCB_IM_ALL_LOCALES).unwrap()
+}

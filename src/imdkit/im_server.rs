@@ -26,9 +26,9 @@ pub type IcResult<T> = Result<T, DeadInputContextError>;
 
 #[derive(Debug, Clone, Copy)]
 pub enum CommittedString<'a> {
-    Chars(&'a CStr),
     KeySym(u32),
-    Both(u32, &'a CStr),
+    Chars(&'a [u8]),
+    Both(u32, &'a [u8]),
 }
 
 #[derive(Default)]
@@ -235,8 +235,8 @@ impl ImServerRef {
 
         use CommittedString::*;
         let flag = match committed_str {
-            Chars(_) => ffi::xcb_xim_lookup_flags_t_XCB_XIM_LOOKUP_CHARS,
             KeySym(_) => ffi::xcb_xim_lookup_flags_t_XCB_XIM_LOOKUP_KEYSYM,
+            Chars(_) => ffi::xcb_xim_lookup_flags_t_XCB_XIM_LOOKUP_CHARS,
             Both(_, _) => ffi::xcb_xim_lookup_flags_t_XCB_XIM_LOOKUP_BOTH,
         };
         let (s, len) = {
@@ -245,7 +245,7 @@ impl ImServerRef {
                 _ => None,
             };
             match opt {
-                Some(x) => (x.as_ptr(), x.to_bytes().len()),
+                Some(x) => (x.as_ptr(), x.len()),
                 None => (std::ptr::null(), 0),
             }
         };
@@ -272,6 +272,91 @@ impl ImServerRef {
         self.check_ic(ic)?;
         unsafe { ffi::xcb_im_geometry_callback(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
         Ok(())
+    }
+
+    pub fn preedit_start_callback(&self, ic: &InputContext) -> IcResult<()> {
+        self.check_ic(ic)?;
+        unsafe { ffi::xcb_im_preedit_start_callback(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
+        Ok(())
+    }
+
+    pub fn preedit_draw_callback(
+        &self,
+        ic: &InputContext,
+        frame: &PreeditDrawMessage,
+    ) -> IcResult<()> {
+        self.check_ic(ic)?;
+
+        let mut frame = ffi::xcb_im_preedit_draw_fr_t {
+            input_method_ID: 0,  // set by xcb-imdkit
+            input_context_ID: 0, // set by xcb-imdkit
+            caret: frame.caret,
+            chg_first: frame.chg_first,
+            chg_length: frame.chg_length,
+            status: frame.status.bits(),
+            length_of_preedit_string: frame.preedit_string.len() as u16,
+            preedit_string: frame.preedit_string.as_ptr() as *mut u8,
+            feedback_array: ffi::_xcb_im_preedit_draw_fr_t__bindgen_ty_1 {
+                size: (frame.feedback_array.len() * mem::size_of::<u32>()) as u32,
+                items: frame.feedback_array.as_ptr() as *mut u32,
+            },
+        };
+
+        unsafe {
+            ffi::xcb_im_preedit_draw_callback(self.get_im_ptr().as_ptr(), ic.as_ptr(), &mut frame)
+        }
+
+        Ok(())
+    }
+
+    pub fn preedit_caret_callback(
+        &self,
+        ic: &InputContext,
+        frame: &PreeditCaretMessage,
+    ) -> IcResult<()> {
+        self.check_ic(ic)?;
+
+        let mut frame = ffi::xcb_im_preedit_caret_fr_t {
+            input_method_ID: 0,  // set by xcb-imdkit
+            input_context_ID: 0, // set by xcb-imdkit
+            position: frame.position,
+            direction: frame.direction as u32,
+            style: frame.style as u32,
+        };
+
+        unsafe {
+            ffi::xcb_im_preedit_caret_callback(self.get_im_ptr().as_ptr(), ic.as_ptr(), &mut frame)
+        }
+
+        Ok(())
+    }
+
+    pub fn preedit_done_callback(&self, ic: &InputContext) -> IcResult<()> {
+        self.check_ic(ic)?;
+        unsafe { ffi::xcb_im_preedit_done_callback(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
+        Ok(())
+    }
+
+    pub fn preedit_start(&self, ic: &InputContext) -> IcResult<()> {
+        self.check_ic(ic)?;
+        unsafe { ffi::xcb_im_preedit_start(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
+        Ok(())
+    }
+
+    pub fn preedit_end(&self, ic: &InputContext) -> IcResult<()> {
+        self.check_ic(ic)?;
+        unsafe { ffi::xcb_im_preedit_end(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
+        Ok(())
+    }
+
+    pub fn sync_xlib(&self, ic: &InputContext) -> IcResult<()> {
+        self.check_ic(ic)?;
+        unsafe { ffi::xcb_im_sync_xlib(self.get_im_ptr().as_ptr(), ic.as_ptr()) }
+        Ok(())
+    }
+
+    pub fn support_extension(&self, major_code: u16, minor_code: u16) -> bool {
+        unsafe { ffi::xcb_im_support_extension(self.get_im_ptr().as_ptr(), major_code, minor_code) }
     }
 
     pub fn is_alive_ic(&self, ic: &InputContext) -> bool {
