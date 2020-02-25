@@ -1,5 +1,5 @@
-use crate::ffi;
 use super::data_types::*;
+use crate::ffi;
 use std::ptr::NonNull;
 use xcb;
 
@@ -8,9 +8,9 @@ pub struct InputContext(pub(crate) NonNull<ffi::xcb_im_input_context_t>);
 
 impl InputContext {
     pub fn get_input_style(&self) -> InputStyle {
-        InputStyle::from_bits(unsafe {
-            ffi::xcb_im_input_context_get_input_style(self.as_ptr())
-        }).expect("Unexpected input style")
+        let bits = unsafe { ffi::xcb_im_input_context_get_input_style(self.as_ptr()) };
+        debug_assert!(InputStyle::from_bits(bits).is_some());
+        InputStyle::from_bits_truncate(bits)
     }
 
     pub fn get_client_window(&self) -> xcb::Window {

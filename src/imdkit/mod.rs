@@ -28,3 +28,14 @@ impl ImClient {
 pub fn all_locales() -> &'static CStr {
     CStr::from_bytes_with_nul(ffi::XCB_IM_ALL_LOCALES).unwrap()
 }
+
+pub(crate) unsafe fn slice_from_raw<'a, T>(data: *const T, len: impl Into<usize>) -> &'a [T] {
+    let len = len.into();
+    if len == 0 {
+        // slice::from_raw_parts cannot accept null
+        &[]
+    } else {
+        debug_assert!(!data.is_null());
+        std::slice::from_raw_parts(data, len)
+    }
+}

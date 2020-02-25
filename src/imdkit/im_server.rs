@@ -41,8 +41,8 @@ impl<'a> ImServer<'a> {
         server_name: &CStr,
         locale: &CStr,
         input_styles: &[InputStyle],
-        on_keys_list: &[TriggerKey],
-        off_keys_list: &[TriggerKey],
+        on_keys_list: &[XimTriggerKey],
+        off_keys_list: &[XimTriggerKey],
         encoding_list: impl IntoIterator<Item = E>,
         event_mask: u32,
     ) -> Self
@@ -141,7 +141,12 @@ extern "C" fn im_callback(
 
     match data_cell.im {
         Some(p) if p.as_ptr() == im => (),
-        _ => panic!("Unknown im"),
+        expected => {
+            if cfg!(debug_assertions) {
+                panic!("unexpected im (actual: {:?}, expected: {:?}", im, expected)
+            }
+            return;
+        }
     }
 
     let client_opt = NonNull::new(client).map(ImClient);

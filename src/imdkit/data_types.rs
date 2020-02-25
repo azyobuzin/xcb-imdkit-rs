@@ -1,6 +1,7 @@
+use super::slice_from_raw;
 use crate::ffi::*;
 
-pub type TriggerKey = xcb_im_ximtriggerkey_fr_t;
+pub type XimTriggerKey = xcb_im_ximtriggerkey_fr_t;
 pub type PreeditAttr = xcb_im_preedit_attr_t;
 pub type StatusAttr = xcb_im_status_attr_t;
 
@@ -31,6 +32,21 @@ pub struct StatusDrawTextMessage<'a> {
 #[derive(Debug, Clone, Copy)]
 pub struct StatusDrawBitmapMessage {
     pub pixmap_data: xcb::Pixmap,
+}
+
+#[derive(Debug, Clone)]
+pub struct XicAttribute<'a> {
+    pub attribute_id: u16,
+    pub value: &'a [u8],
+}
+
+impl<'a> From<&'a xcb_im_xicattribute_fr_t> for XicAttribute<'a> {
+    fn from(fr: &'a xcb_im_xicattribute_fr_t) -> Self {
+        XicAttribute {
+            attribute_id: fr.attribute_ID,
+            value: unsafe { slice_from_raw(fr.value, fr.value_length) },
+        }
+    }
 }
 
 bitflags! {
@@ -71,6 +87,22 @@ bitflags! {
     }
 }
 
+bitflags! {
+    #[derive(Default)]
+    pub struct ForwardEventFlag: u16 {
+        const SYNCHRONOUS = 1;
+        const REQUEST_FILTERING = 2;
+        const REQUEST_LOOKUPSTRING = 4;
+    }
+}
+
+bitflags! {
+    #[derive(Default)]
+    pub struct ExtForwardKeyeventFlag: u16 {
+        const SYNCHRONOUS = 1;
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum CaretDirection {
     ForwardChar = 0,
@@ -103,5 +135,38 @@ pub enum CaretStyle {
 impl Default for CaretStyle {
     fn default() -> Self {
         CaretStyle::Invisible
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum TriggerNotifyFlag {
+    OnKeysList,
+    OffKeysList,
+    Other(u32),
+}
+
+impl Default for TriggerNotifyFlag {
+    fn default() -> Self {
+        TriggerNotifyFlag::OnKeysList
+    }
+}
+
+impl From<u32> for TriggerNotifyFlag {
+    fn from(x: u32) -> Self {
+        match x {
+            0 => TriggerNotifyFlag::OnKeysList,
+            1 => TriggerNotifyFlag::OffKeysList,
+            x => TriggerNotifyFlag::Other(x),
+        }
+    }
+}
+
+impl From<TriggerNotifyFlag> for u32 {
+    fn from(x: TriggerNotifyFlag) -> Self {
+        match x {
+            TriggerNotifyFlag::OnKeysList => 0,
+            TriggerNotifyFlag::OffKeysList => 1,
+            TriggerNotifyFlag::Other(x) => x,
+        }
     }
 }
