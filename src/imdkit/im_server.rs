@@ -276,9 +276,9 @@ impl ImServerRef {
         let mut frame = ffi::xcb_im_preedit_draw_fr_t {
             input_method_ID: 0,  // set by xcb-imdkit
             input_context_ID: 0, // set by xcb-imdkit
-            caret: frame.caret,
-            chg_first: frame.chg_first,
-            chg_length: frame.chg_length,
+            caret: frame.caret as u32,
+            chg_first: frame.chg_first as u32,
+            chg_length: frame.chg_length as u32,
             status: frame.status.bits(),
             length_of_preedit_string: frame.preedit_string.len() as u16,
             preedit_string: frame.preedit_string.as_ptr() as *mut u8,
@@ -295,7 +295,7 @@ impl ImServerRef {
         let mut frame = ffi::xcb_im_preedit_caret_fr_t {
             input_method_ID: 0,  // set by xcb-imdkit
             input_context_ID: 0, // set by xcb-imdkit
-            position: frame.position,
+            position: frame.position as u32,
             direction: frame.direction as u32,
             style: frame.style as u32,
         };

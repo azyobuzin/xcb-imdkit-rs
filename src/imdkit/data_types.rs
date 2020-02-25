@@ -7,9 +7,9 @@ pub type StatusAttr = xcb_im_status_attr_t;
 
 #[derive(Debug, Clone, Copy)]
 pub struct PreeditDrawMessage<'a> {
-    pub caret: u32,
-    pub chg_first: u32,
-    pub chg_length: u32,
+    pub caret: i32,
+    pub chg_first: i32,
+    pub chg_length: i32,
     pub status: DrawStatus,
     pub preedit_string: &'a [u8],
     pub feedback_array: &'a [Feedback],
@@ -17,7 +17,7 @@ pub struct PreeditDrawMessage<'a> {
 
 #[derive(Debug, Clone, Copy)]
 pub struct PreeditCaretMessage {
-    pub position: u32,
+    pub position: i32,
     pub direction: CaretDirection,
     pub style: CaretStyle,
 }
