@@ -4,7 +4,7 @@ pub type TriggerKey = xcb_im_ximtriggerkey_fr_t;
 pub type PreeditAttr = xcb_im_preedit_attr_t;
 pub type StatusAttr = xcb_im_status_attr_t;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct PreeditDrawMessage<'a> {
     pub caret: u32,
     pub chg_first: u32,
@@ -19,6 +19,18 @@ pub struct PreeditCaretMessage {
     pub position: u32,
     pub direction: CaretDirection,
     pub style: CaretStyle,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct StatusDrawTextMessage<'a> {
+    pub status: DrawStatus,
+    pub status_string: &'a [u8],
+    pub feedback_array: &'a [Feedback],
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct StatusDrawBitmapMessage {
+    pub pixmap_data: xcb::Pixmap,
 }
 
 bitflags! {

@@ -302,6 +302,44 @@ impl ImServerRef {
         unsafe { ffi::xcb_im_preedit_done_callback(self.get_im_ptr(), ic.as_ptr()) }
     }
 
+    pub fn status_start_callback(&self, ic: &InputContext) {
+        unsafe { ffi::xcb_im_status_start_callback(self.get_im_ptr(), ic.as_ptr()) }
+    }
+
+    pub fn status_draw_text_callback(&self, ic: &InputContext, frame: &StatusDrawTextMessage) {
+        let mut frame = ffi::xcb_im_status_draw_text_fr_t {
+            input_method_ID: 0,          // set by xcb-imdkit
+            input_context_ID: 0,         // set by xcb-imdkit
+            type_: ffi::XCB_IM_TextType, // set by xcb-imdkit
+            status: frame.status.bits(),
+            length_of_status_string: frame.status_string.len() as u16,
+            status_string: frame.status_string.as_ptr() as *mut u8,
+            feedback_array: ffi::_xcb_im_status_draw_text_fr_t__bindgen_ty_1 {
+                size: (frame.feedback_array.len() * mem::size_of::<u32>()) as u32,
+                items: frame.feedback_array.as_ptr() as *mut u32,
+            },
+        };
+
+        unsafe { ffi::xcb_im_status_draw_text_callback(self.get_im_ptr(), ic.as_ptr(), &mut frame) }
+    }
+
+    pub fn status_draw_bitmap_callback(&self, ic: &InputContext, frame: &StatusDrawBitmapMessage) {
+        let mut frame = ffi::xcb_im_status_draw_bitmap_fr_t {
+            input_method_ID: 0,            // set by xcb-imdkit
+            input_context_ID: 0,           // set by xcb-imdkit
+            type_: ffi::XCB_IM_BitmapType, // set by xcb-imdkit
+            pixmap_data: frame.pixmap_data,
+        };
+
+        unsafe {
+            ffi::xcb_im_status_draw_bitmap_callback(self.get_im_ptr(), ic.as_ptr(), &mut frame)
+        }
+    }
+
+    pub fn status_done_callback(&self, ic: &InputContext) {
+        unsafe { ffi::xcb_im_status_done_callback(self.get_im_ptr(), ic.as_ptr()) }
+    }
+
     pub fn preedit_start(&self, ic: &InputContext) {
         unsafe { ffi::xcb_im_preedit_start(self.get_im_ptr(), ic.as_ptr()) }
     }
