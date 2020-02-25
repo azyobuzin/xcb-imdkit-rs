@@ -101,11 +101,14 @@ impl<'a> ImServer<'a> {
         }
     }
 
-    pub fn set_callback<'b, F>(&'b mut self, callback: F)
+    pub fn set_callback<'b, F>(&'b mut self, callback: Option<F>)
     where
         F: FnMut(&ImServerRef, CallbackArgs) + 'static,
     {
-        self.as_ref().get_data().callback = Some(Box::new(callback));
+        self.as_ref().get_data().callback = match callback {
+            Some(x) => Some(Box::new(x)),
+            None => None,
+        };
     }
 
     pub fn open(&mut self) -> Result<(), ()> {
@@ -316,7 +319,7 @@ impl ImServerRef {
     }
 
     pub fn get_ic(&self, ic_ptr: *mut ffi::xcb_im_input_context_t) -> Option<&InputContext> {
-        NonNull::new(ic_ptr).and_then(|ic| self.get_data().input_contexts.get(&ic))
+        NonNull::new(ic_ptr).and_then(|p| self.get_data().input_contexts.get(&p))
     }
 
     #[inline]
