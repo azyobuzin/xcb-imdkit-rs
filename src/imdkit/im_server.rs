@@ -11,14 +11,19 @@ use std::os::raw::{c_char, c_void};
 use std::ptr::NonNull;
 use xcb;
 
+// Note: Can we mark ImServer as Send?
+// * XCB is thread-safe (Send and Sync), but rust-xcb marks Connection as !Send and !Sync.
+// * xcb-imdkit is not thread-safe (!Sync). However we can move the pointer to another thread safely (Send).
+// * A handler is also required to be Send.
+
 pub struct ImServer<'a> {
     conn: PhantomData<&'a xcb::Connection>,
-    data_ptr: NonNull<ImServerData<'a>>,
+    data_ptr: NonNull<ImServerData>,
     close_on_drop: bool,
 }
 
 #[derive(PartialEq, Eq, Hash)]
-pub struct ImServerRef(NonNull<ImServerData<'static>>);
+pub struct ImServerRef(NonNull<ImServerData>);
 
 #[derive(Debug, Clone, Copy)]
 pub enum CommittedString<'a> {
@@ -27,9 +32,9 @@ pub enum CommittedString<'a> {
     Both(u32, &'a [u8]),
 }
 
-struct ImServerData<'a> {
+struct ImServerData {
     im: Option<NonNull<ffi::xcb_im_t>>,
-    handler: RefCell<Box<dyn ImMessageHandler + 'a>>,
+    handler: RefCell<Box<dyn ImMessageHandler>>,
     input_contexts: HashMap<NonNull<ffi::xcb_im_input_context_t>, InputContext>,
 }
 
@@ -71,9 +76,21 @@ impl<'a> ImServer<'a> {
             encodings: encoding_list_ptrs.as_ptr() as *mut ffi::xcb_im_encoding_t,
         };
 
+        let handler_cell = {
+            let handler_box: Box<dyn ImMessageHandler + 'a> = Box::new(handler);
+
+            // The lifetime parameter can be ignored because the ImServer and
+            // the handler will be dropped at the same time.
+            let handler_box: Box<dyn ImMessageHandler + 'static> =
+                unsafe { mem::transmute(handler_box) };
+
+            // Use RefCell to bug check
+            RefCell::new(handler_box)
+        };
+
         let data_ptr = Box::into_raw(Box::new(ImServerData {
             im: None,
-            handler: RefCell::new(Box::new(handler)),
+            handler: handler_cell,
             input_contexts: Default::default(),
         }));
 
@@ -368,8 +385,7 @@ impl ImServerRef {
         self.get_data().im.unwrap()
     }
 
-    fn get_data(&self) -> &mut ImServerData<'static> {
-        // HACK: ignore lifetime parameter because ImServerRef lives shorter than ImServer
+    fn get_data(&self) -> &mut ImServerData {
         unsafe { Box::leak(Box::from_raw(self.0.as_ptr())) }
     }
 }
@@ -382,7 +398,7 @@ impl fmt::Debug for ImServerRef {
     }
 }
 
-impl<'a> fmt::Debug for ImServerData<'a> {
+impl fmt::Debug for ImServerData {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("ImServerData")
             .field("im", &self.im)

@@ -84,6 +84,7 @@ fn main() {
 }
 
 struct TestServerHandler<'a> {
+    #[allow(dead_code)]
     end: Rc<Cell<bool>>,
     key_symbols: KeySymbols<'a>,
 }
