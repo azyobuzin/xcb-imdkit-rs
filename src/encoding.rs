@@ -107,7 +107,7 @@ impl Error for ConvertError {
     }
 }
 
-// https://github.com/fcitx/xcb-imdkit/blob/bb2f10c4754223bc5afaacab7a6417ee0998e303/test/test_encoding.c
+// Ported from https://github.com/fcitx/xcb-imdkit/blob/bb2f10c4754223bc5afaacab7a6417ee0998e303/test/test_encoding.c
 #[test]
 fn shuttle_test() {
     fn test_conversion(s: &str) {

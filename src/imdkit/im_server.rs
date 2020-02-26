@@ -13,12 +13,12 @@ use xcb;
 
 pub struct ImServer<'a> {
     conn: PhantomData<&'a xcb::Connection>,
-    data_ptr: NonNull<ImServerData>,
+    data_ptr: NonNull<ImServerData<'a>>,
     close_on_drop: bool,
 }
 
 #[derive(PartialEq, Eq, Hash)]
-pub struct ImServerRef(NonNull<ImServerData>);
+pub struct ImServerRef(NonNull<ImServerData<'static>>);
 
 #[derive(Debug, Clone, Copy)]
 pub enum CommittedString<'a> {
@@ -27,9 +27,9 @@ pub enum CommittedString<'a> {
     Both(u32, &'a [u8]),
 }
 
-struct ImServerData {
+struct ImServerData<'a> {
     im: Option<NonNull<ffi::xcb_im_t>>,
-    handler: RefCell<Box<dyn ImMessageHandler>>,
+    handler: RefCell<Box<dyn ImMessageHandler + 'a>>,
     input_contexts: HashMap<NonNull<ffi::xcb_im_input_context_t>, InputContext>,
 }
 
@@ -45,7 +45,7 @@ impl<'a> ImServer<'a> {
         off_keys_list: &[XimTriggerKey],
         encoding_list: impl IntoIterator<Item = E>,
         event_mask: u32,
-        handler: impl ImMessageHandler + 'static,
+        handler: impl ImMessageHandler + 'a,
     ) -> Self
     where
         E: AsRef<CStr>,
@@ -368,7 +368,8 @@ impl ImServerRef {
         self.get_data().im.unwrap()
     }
 
-    fn get_data(&self) -> &mut ImServerData {
+    fn get_data(&self) -> &mut ImServerData<'static> {
+        // HACK: ignore lifetime parameter because ImServerRef lives shorter than ImServer
         unsafe { Box::leak(Box::from_raw(self.0.as_ptr())) }
     }
 }
@@ -381,7 +382,7 @@ impl fmt::Debug for ImServerRef {
     }
 }
 
-impl fmt::Debug for ImServerData {
+impl<'a> fmt::Debug for ImServerData<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("ImServerData")
             .field("im", &self.im)
