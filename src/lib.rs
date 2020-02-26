@@ -2,5 +2,6 @@
 extern crate bitflags;
 
 pub mod encoding;
-pub mod ffi;
+#[allow(dead_code)]
+mod ffi;
 pub mod imdkit;

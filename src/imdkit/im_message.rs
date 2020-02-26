@@ -1,225 +1,277 @@
 use super::data_types::*;
-use super::{slice_from_raw, ImClient, InputContext};
+use super::{slice_from_raw, ImClient, ImServerRef, InputContext};
 use crate::ffi::*;
+use std::mem;
 use std::os::raw::c_void;
-
-//#[derive(Debug)]
-pub struct CallbackArgs<'a> {
-    pub major_opcode: u8,
-    pub minor_opcode: u8,
-    pub parsed: ImMessage<'a>,
-    pub raw: &'a RawCallbackArgs<'a>,
-}
+use std::slice;
 
 #[derive(Debug, Clone)]
-pub struct RawCallbackArgs<'a> {
+pub(crate) struct RawCallbackArgs<'a> {
     pub client: Option<&'a ImClient>,
     pub ic: Option<&'a InputContext>,
-    pub hdr: *const xcb_im_packet_header_fr_t,
+    pub major_opcode: u8,
+    pub minor_opcode: u8,
     pub frame: *mut c_void,
     pub arg: *mut c_void,
 }
 
-// TODO: trait ImMessageHandler
+pub trait ImMessageHandler {
+    fn handle_connect(&mut self, _im: &ImServerRef, _client: &ImClient, _frame: &ConnectMessage) {}
 
-//#[derive(Debug)]
-#[non_exhaustive]
-pub enum ImMessage<'a> {
-    Connect {
-        client: &'a ImClient,
-        frame: &'a xcb_im_connect_fr_t,
-    },
-    Disconnect {
-        client: &'a ImClient,
-    },
-    Open {
-        client: &'a ImClient,
-        frame: &'a xcb_im_open_fr_t,
-    },
-    Close {
-        client: &'a ImClient,
-        frame: &'a xcb_im_close_fr_t,
-    },
-    CreateIc {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_create_ic_fr_t,
-        reply_frame: &'a mut xcb_im_create_ic_reply_fr_t,
-    },
-    SetIcValues {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_set_ic_values_fr_t,
-    },
-    GetIcValues {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_get_ic_values_fr_t,
-    },
-    SetIcFocus {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_set_ic_focus_fr_t,
-    },
-    UnsetIcFocus {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_unset_ic_focus_fr_t,
-    },
-    DestroyIc {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-    },
-    ResetIc {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_reset_ic_fr_t,
-        // TODO: committed_string は preedit_string の間違いだと思う
-        // TODO: 文字列をコールバックから返すには
-        reply_frame: &'a mut xcb_im_reset_ic_reply_fr_t,
-    },
-    ForwardEvent {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_forward_event_fr_t,
-        // TODO: KeyPressEvent without dropping
-        key_event: &'a xcb::ffi::xcb_key_press_event_t,
-    },
-    ExtForwardKeyevent {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_ext_forward_keyevent_fr_t,
-        key_event: &'a xcb::ffi::xcb_key_press_event_t,
-    },
-    SyncReply {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_sync_reply_fr_t,
-    },
-    TriggerNotify {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_trigger_notify_fr_t,
-    },
-    PreeditStartReply {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_preedit_start_reply_fr_t,
-    },
-    PreeditCaretReply {
-        client: &'a ImClient,
-        ic: &'a InputContext,
-        frame: &'a xcb_im_preedit_caret_reply_fr_t,
-    },
-    #[doc(hidden)]
-    __Unsupported,
+    fn handle_disconnect(&mut self, _im: &ImServerRef, _client: &ImClient) {}
+
+    fn handle_open(&mut self, _im: &ImServerRef, _client: &ImClient, _frame: &OpenMessage) {}
+
+    fn handle_close(&mut self, _im: &ImServerRef, _client: &ImClient, _frame: &CloseMessage) {}
+
+    fn handle_create_ic(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &CreateIcMessage,
+        _reply_frame: &CreateIcReplyMessage,
+    ) {
+    }
+
+    fn handle_set_ic_values(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &SetIcValuesMessage,
+    ) {
+    }
+
+    fn handle_get_ic_values(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &GetIcValuesMessage,
+    ) {
+    }
+
+    fn handle_set_ic_focus(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &SetIcFocusMessage,
+    ) {
+    }
+
+    fn handle_unset_ic_focus(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &UnsetIcFocusMessage,
+    ) {
+    }
+
+    fn handle_destoy_ic(&mut self, _im: &ImServerRef, _client: &ImClient, _ic: &InputContext) {}
+
+    fn handle_reset_ic(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &ResetIcMessage,
+    ) -> ResetIcReplyMessage {
+        Default::default()
+    }
+
+    fn handle_forward_event(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &ForwardEventMessage,
+        _key_event: &xcb::KeyPressEvent,
+    ) {
+    }
+
+    fn handle_ext_forward_keyevent(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &ExtForwardKeyeventMessage,
+        _key_event: &xcb::KeyPressEvent,
+    ) {
+    }
+
+    fn handle_sync_reply(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &SyncReplyMessage,
+    ) {
+    }
+
+    fn handle_trigger_notify(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &TriggerNotifyMessage,
+    ) {
+    }
+
+    fn handle_preedit_start_reply(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &PreeditStartReplyMessage,
+    ) {
+    }
+
+    fn handle_preedit_caret_reply(
+        &mut self,
+        _im: &ImServerRef,
+        _client: &ImClient,
+        _ic: &InputContext,
+        _frame: &PreeditCaretReplyMessage,
+    ) {
+    }
 }
 
-pub(crate) fn parse_callback_args<'a>(raw: &'a RawCallbackArgs) -> CallbackArgs<'a> {
-    let (major_opcode, minor_opcode) = unsafe {
-        let hdr = &*raw.hdr;
-        (hdr.major_opcode, hdr.minor_opcode)
-    };
+pub(crate) fn handle_callback(
+    im: &ImServerRef,
+    args: &RawCallbackArgs,
+    handler: &mut dyn ImMessageHandler,
+) {
+    unsafe {
+        match (args.major_opcode as u32, args.minor_opcode as u32) {
+            (XCB_XIM_CONNECT, _) => handler.handle_connect(
+                im,
+                args.client.unwrap(),
+                &(&*(args.frame as *const xcb_im_connect_fr_t)).into(),
+            ),
+            (XCB_XIM_DISCONNECT, _) => handler.handle_disconnect(im, args.client.unwrap()),
+            (XCB_XIM_OPEN, _) => handler.handle_open(
+                im,
+                args.client.unwrap(),
+                &(&*(args.frame as *const xcb_im_open_fr_t)).into(),
+            ),
+            (XCB_XIM_CLOSE, _) => handler.handle_close(
+                im,
+                args.client.unwrap(),
+                &*(args.frame as *const xcb_im_close_fr_t),
+            ),
+            (XCB_XIM_CREATE_IC, _) => handler.handle_create_ic(
+                im,
+                args.client.unwrap(),
+                args.ic.unwrap(),
+                &(&*(args.frame as *const xcb_im_create_ic_fr_t)).into(),
+                &*(args.arg as *mut xcb_im_create_ic_reply_fr_t),
+            ),
+            (XCB_XIM_SET_IC_VALUES, _) => handler.handle_set_ic_values(
+                im,
+                args.client.unwrap(),
+                args.ic.unwrap(),
+                &(&*(args.frame as *const xcb_im_set_ic_values_fr_t)).into(),
+            ),
+            (XCB_XIM_GET_IC_VALUES, _) => handler.handle_get_ic_values(
+                im,
+                args.client.unwrap(),
+                args.ic.unwrap(),
+                &(&*(args.frame as *const xcb_im_get_ic_values_fr_t)).into(),
+            ),
+            (XCB_XIM_SET_IC_FOCUS, _) => handler.handle_set_ic_focus(
+                im,
+                args.client.unwrap(),
+                args.ic.unwrap(),
+                &*(args.frame as *const xcb_im_set_ic_focus_fr_t),
+            ),
+            (XCB_XIM_UNSET_IC_FOCUS, _) => handler.handle_unset_ic_focus(
+                im,
+                args.client.unwrap(),
+                args.ic.unwrap(),
+                &*(args.frame as *const xcb_im_unset_ic_focus_fr_t),
+            ),
+            (XCB_XIM_DESTROY_IC, _) => {
+                handler.handle_destoy_ic(im, args.client.unwrap(), args.ic.unwrap())
+            }
+            (XCB_XIM_RESET_IC, _) => {
+                let reply = handler.handle_reset_ic(
+                    im,
+                    args.client.unwrap(),
+                    args.ic.unwrap(),
+                    &*(args.frame as *const xcb_im_reset_ic_fr_t),
+                );
+                if reply.preedit_string.len() > 0 {
+                    let allocated =
+                        libc::calloc(reply.preedit_string.len() + 1, mem::size_of::<u8>())
+                            as *mut u8;
+                    slice::from_raw_parts_mut(allocated, reply.preedit_string.len())
+                        .copy_from_slice(&reply.preedit_string);
 
-    let parsed = unsafe {
-        use ImMessage::*;
-        match major_opcode as u32 {
-            XCB_XIM_CONNECT => Connect {
-                client: raw.client.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            XCB_XIM_DISCONNECT => Disconnect {
-                client: raw.client.unwrap(),
-            },
-            XCB_XIM_OPEN => Open {
-                client: raw.client.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            XCB_XIM_CLOSE => Close {
-                client: raw.client.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            XCB_XIM_CREATE_IC => CreateIc {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-                reply_frame: &mut *(raw.arg as *mut _),
-            },
-            XCB_XIM_SET_IC_VALUES => SetIcValues {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            XCB_XIM_GET_IC_VALUES => GetIcValues {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            XCB_XIM_SET_IC_FOCUS => SetIcFocus {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            XCB_XIM_UNSET_IC_FOCUS => UnsetIcFocus {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            XCB_XIM_DESTROY_IC => DestroyIc {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-            },
-            XCB_XIM_RESET_IC => ResetIc {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-                reply_frame: &mut *(raw.frame as *mut _),
-            },
-            XCB_XIM_FORWARD_EVENT => ForwardEvent {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-                key_event: &*(raw.arg as *const _),
-            },
-            XCB_XIM_EXTENSION => match minor_opcode as u32 {
-                XCB_XIM_EXT_FORWARD_KEYEVENT => ExtForwardKeyevent {
-                    client: raw.client.unwrap(),
-                    ic: raw.ic.unwrap(),
-                    frame: &*(raw.frame as *const _),
-                    key_event: &*(raw.arg as *const _),
-                },
-                _ => __Unsupported,
-            },
-            XCB_XIM_SYNC_REPLY => SyncReply {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            XCB_XIM_TRIGGER_NOTIFY => TriggerNotify {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            XCB_XIM_PREEDIT_START_REPLY => PreeditStartReply {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            XCB_XIM_PREEDIT_CARET_REPLY => PreeditCaretReply {
-                client: raw.client.unwrap(),
-                ic: raw.ic.unwrap(),
-                frame: &*(raw.frame as *const _),
-            },
-            _ => __Unsupported,
+                    let mut reply_frame = &mut *(args.arg as *mut xcb_im_reset_ic_reply_fr_t);
+                    reply_frame.byte_length_of_committed_string = reply.preedit_string.len() as u16;
+                    reply_frame.committed_string = allocated; // freed by xcb-imdkit
+                }
+            }
+            (XCB_XIM_FORWARD_EVENT, _) => {
+                let key_event = xcb::Event {
+                    ptr: args.arg as *mut xcb::ffi::xcb_key_press_event_t,
+                };
+                handler.handle_forward_event(
+                    im,
+                    args.client.unwrap(),
+                    args.ic.unwrap(),
+                    &(&*(args.frame as *const xcb_im_forward_event_fr_t)).into(),
+                    &key_event,
+                );
+                mem::forget(key_event); // do not free
+            }
+            (XCB_XIM_EXTENSION, XCB_XIM_EXT_FORWARD_KEYEVENT) => {
+                let key_event = xcb::Event {
+                    ptr: args.arg as *mut xcb::ffi::xcb_key_press_event_t,
+                };
+                handler.handle_ext_forward_keyevent(
+                    im,
+                    args.client.unwrap(),
+                    args.ic.unwrap(),
+                    &(&*(args.frame as *const xcb_im_ext_forward_keyevent_fr_t)).into(),
+                    &key_event,
+                );
+                mem::forget(key_event); // do not free
+            }
+            (XCB_XIM_SYNC_REPLY, _) => handler.handle_sync_reply(
+                im,
+                args.client.unwrap(),
+                args.ic.unwrap(),
+                &*(args.frame as *const xcb_im_sync_reply_fr_t),
+            ),
+            (XCB_XIM_TRIGGER_NOTIFY, _) => handler.handle_trigger_notify(
+                im,
+                args.client.unwrap(),
+                args.ic.unwrap(),
+                &(&*(args.frame as *const xcb_im_trigger_notify_fr_t)).into(),
+            ),
+            (XCB_XIM_PREEDIT_START_REPLY, _) => handler.handle_preedit_start_reply(
+                im,
+                args.client.unwrap(),
+                args.ic.unwrap(),
+                &(&*(args.frame as *const xcb_im_preedit_start_reply_fr_t)).into(),
+            ),
+            (XCB_XIM_PREEDIT_CARET_REPLY, _) => handler.handle_preedit_caret_reply(
+                im,
+                args.client.unwrap(),
+                args.ic.unwrap(),
+                &*(args.frame as *const xcb_im_preedit_caret_reply_fr_t),
+            ),
+            x => {
+                if cfg!(debug_assertions) {
+                    panic!("unknown opcode {:?}", x)
+                }
+            }
         }
     };
-
-    CallbackArgs {
-        major_opcode,
-        minor_opcode,
-        parsed,
-        raw,
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -335,7 +387,7 @@ pub type UnsetIcFocusMessage = xcb_im_unset_ic_focus_fr_t;
 
 pub type ResetIcMessage = xcb_im_reset_ic_fr_t;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ResetIcReplyMessage {
     pub preedit_string: Vec<u8>,
 }

@@ -1,6 +1,7 @@
 use super::*;
 use crate::ffi;
 use std::borrow::Borrow;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::ffi::CStr;
 use std::fmt;
@@ -26,10 +27,9 @@ pub enum CommittedString<'a> {
     Both(u32, &'a [u8]),
 }
 
-#[derive(Default)]
 struct ImServerData {
     im: Option<NonNull<ffi::xcb_im_t>>,
-    callback: Option<Box<dyn FnMut(&ImServerRef, CallbackArgs)>>,
+    handler: RefCell<Box<dyn ImMessageHandler>>,
     input_contexts: HashMap<NonNull<ffi::xcb_im_input_context_t>, InputContext>,
 }
 
@@ -45,6 +45,7 @@ impl<'a> ImServer<'a> {
         off_keys_list: &[XimTriggerKey],
         encoding_list: impl IntoIterator<Item = E>,
         event_mask: u32,
+        handler: impl ImMessageHandler + 'static,
     ) -> Self
     where
         E: AsRef<CStr>,
@@ -70,7 +71,11 @@ impl<'a> ImServer<'a> {
             encodings: encoding_list_ptrs.as_ptr() as *mut ffi::xcb_im_encoding_t,
         };
 
-        let data_ptr = Box::into_raw(Box::<ImServerData>::default());
+        let data_ptr = Box::into_raw(Box::new(ImServerData {
+            im: None,
+            handler: RefCell::new(Box::new(handler)),
+            input_contexts: Default::default(),
+        }));
 
         let im = NonNull::new(unsafe {
             ffi::xcb_im_create(
@@ -101,16 +106,6 @@ impl<'a> ImServer<'a> {
         }
     }
 
-    pub fn set_callback<'b, F>(&'b mut self, callback: Option<F>)
-    where
-        F: FnMut(&ImServerRef, CallbackArgs) + 'static,
-    {
-        self.as_ref().get_data().callback = match callback {
-            Some(x) => Some(Box::new(x)),
-            None => None,
-        };
-    }
-
     pub fn open(&mut self) -> Result<(), ()> {
         match unsafe { ffi::xcb_im_open_im(self.as_ref().get_im_ptr()) } {
             true => Ok(()),
@@ -120,6 +115,10 @@ impl<'a> ImServer<'a> {
 
     pub fn close(&mut self) {
         unsafe { ffi::xcb_im_close_im(self.as_ref().get_im_ptr()) }
+    }
+
+    pub fn filter_event(&mut self, event: &xcb::GenericEvent) -> bool {
+        unsafe { ffi::xcb_im_filter_event(self.as_ref().get_im_ptr(), event.ptr) }
     }
 
     pub fn close_on_drop(&mut self, enabled: bool) {
@@ -150,43 +149,41 @@ extern "C" fn im_callback(
     }
 
     let client_opt = NonNull::new(client).map(ImClient);
-    let ic_opt = NonNull::new(ic).map(InputContext);
+    let ic_ptr_opt = NonNull::new(ic);
+    let ic_opt = ic_ptr_opt.as_ref().map(|x| InputContext(*x));
+    let hdr = unsafe { &*hdr };
     let raw_args = super::RawCallbackArgs {
         client: client_opt.as_ref(),
         ic: ic_opt.as_ref(),
-        hdr,
+        major_opcode: hdr.major_opcode,
+        minor_opcode: hdr.minor_opcode,
         frame,
         arg,
     };
 
-    let args = super::parse_callback_args(&raw_args);
-
     // Maintain alive ICs
-    let destroyed_ic = match args.parsed {
-        ImMessage::CreateIc { ic, .. } => {
-            let key = ic.as_ptr_non_null();
-            data_cell.input_contexts.insert(key, InputContext(key));
+    let destroyed_ic = match (raw_args.major_opcode as u32, ic_ptr_opt) {
+        (ffi::XCB_XIM_CREATE_IC, Some(ic)) => {
+            data_cell.input_contexts.insert(ic, InputContext(ic));
             None
         }
-        ImMessage::DestroyIc { ic, .. } => Some(ic),
+        (ffi::XCB_XIM_DESTROY_IC, ic) => ic,
         _ => None,
     };
 
-    // Call user callback
-    if let Some(ref mut callback) = data_cell.callback {
-        let im_ref = ImServerRef(data_ptr);
-        callback(&im_ref, args);
-    }
+    // Call handler
+    let im_ref = ImServerRef(data_ptr);
+    handle_callback(&im_ref, &raw_args, &mut **data_cell.handler.borrow_mut());
 
     if let Some(ic) = destroyed_ic {
-        data_cell.input_contexts.remove(&ic.as_ptr_non_null());
+        data_cell.input_contexts.remove(&ic);
     }
 }
 
 impl<'a> Drop for ImServer<'a> {
     fn drop(&mut self) {
         unsafe {
-            let data = Box::from_raw(self.data_ptr.as_ptr());
+            let data = Box::from_raw(self.data_ptr.as_ptr()); // will be dropped
 
             if let Some(im) = data.im {
                 if self.close_on_drop {
@@ -222,10 +219,6 @@ impl<'a> fmt::Debug for ImServer<'a> {
 }
 
 impl ImServerRef {
-    pub fn filter_event(&self, event: &xcb::GenericEvent) -> bool {
-        unsafe { ffi::xcb_im_filter_event(self.get_im_ptr(), event.ptr) }
-    }
-
     pub fn forward_event(&self, ic: &InputContext, event: &xcb::KeyPressEvent) {
         unsafe { ffi::xcb_im_forward_event(self.get_im_ptr(), ic.as_ptr(), event.ptr) }
     }
@@ -392,13 +385,6 @@ impl fmt::Debug for ImServerData {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("ImServerData")
             .field("im", &self.im)
-            .field(
-                "callback",
-                &match self.callback {
-                    Some(_) => "Some",
-                    None => "None",
-                },
-            )
             .field("input_contexts", &self.input_contexts)
             .finish()
     }
